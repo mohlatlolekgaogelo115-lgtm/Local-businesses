@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AllBusiness Dashboard</title>
+  
+  <!-- Firebase SDKs (modular v9+) -->
+  <script type="module">
+    // Import Firebase services
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc,
+      collection,
+      query,
+      where,
+      getDocs 
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAojYRIH8FJL5B8yg1b3qxsc29vB3vLC-8",
+      authDomain: "allbusiness-596cc.firebaseapp.com",
+      projectId: "allbusiness-596cc",
+      storageBucket: "allbusiness-596cc.firebasestorage.app",
+      messagingSenderId: "665302840524",
+      appId: "1:665302840524:web:e9c1078e14bc0de6a87e69",
+      measurementId: "G-EMZFX7CE8V"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ────────────────────────────────────────────────
+    // Global state
+    // ────────────────────────────────────────────────
+    let currentBusiness = null;
+
+    // ────────────────────────────────────────────────
+    // DOM Elements
+    // ────────────────────────────────────────────────
+    const elements = {
+      loading: document.getElementById('loading-screen'),
+      loginMessage: document.getElementById('login-required'),
+      dashboard: document.getElementById('dashboard-content'),
+      businessName: document.getElementById('business-name'),
+      ownerName: document.getElementById('owner-name'),
+      statsCards: document.querySelectorAll('.stat-card .value'),
+      logoutBtn: document.getElementById('btn-logout')
+    };
+
+    // ────────────────────────────────────────────────
+    // Auth state listener (main control flow)
+    // ────────────────────────────────────────────────
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        // Not logged in
+        elements.loading.style.display = 'none';
+        elements.loginMessage.style.display = 'flex';
+        elements.dashboard.style.display = 'none';
+        return;
+      }
+
+      try {
+        // Try to get business document (using uid as document id)
+        const businessRef = doc(db, "businesses", user.uid);
+        const businessSnap = await getDoc(businessRef);
+
+        if (!businessSnap.exists()) {
+          showError("No business profile found. Please complete registration first.");
+          elements.loading.style.display = 'none';
+          return;
+        }
+
+        currentBusiness = businessSnap.data();
+        
+        // Update UI
+        renderDashboard();
+        
+        elements.loading.style.display = 'none';
+        elements.loginMessage.style.display = 'none';
+        elements.dashboard.style.display = 'block';
+
+      } catch (error) {
+        console.error("Dashboard loading error:", error);
+        showError("Something went wrong while loading your dashboard...");
+      }
+    });
+
+    // ────────────────────────────────────────────────
+    // Render dashboard with business data
+    // ────────────────────────────────────────────────
+    function renderDashboard() {
+      elements.businessName.textContent = currentBusiness.businessName || "Your Business";
+      elements.ownerName.textContent = currentBusiness.ownerName || "Business Owner";
+
+      // Example stats - in real app you would query these from Firestore
+      const fakeStats = {
+        ordersToday: "18",
+        revenueThisMonth: "R142,800",
+        activeCustomers: "247",
+        pendingTasks: "5"
+      };
+
+      elements.statsCards[0].textContent = fakeStats.ordersToday;
+      elements.statsCards[1].textContent = fakeStats.revenueThisMonth;
+      elements.statsCards[2].textContent = fakeStats.activeCustomers;
+      elements.statsCards[3].textContent = fakeStats.pendingTasks;
+    }
+
+    function showError(message) {
+      alert(message);
+      // You can create a nicer error UI later
+    }
+
+    // Logout
+    elements.logoutBtn.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        // Redirect will be handled by onAuthStateChanged
+      } catch (err) {
+        console.error("Logout failed:", err);
+      }
+    });
+  </script>
+
+  <!-- Styles -->
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --gray-100: #f3f4f6;
+      --gray-700: #374151;
+      --gray-900: #111827;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-900);
+      min-height: 100vh;
+    }
+
+    header {
+      background: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+
+    main {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .welcome {
+      margin-bottom: 2rem;
+    }
+
+    .grid-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .stat-card:hover { transform: translateY(-4px); }
+
+    .stat-card .label {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card .value {
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+
+    /* Full-screen states */
+    #loading-screen, #login-required {
+      position: fixed;
+      inset: 0;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      z-index: 1000;
+    }
+
+    #dashboard-content { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Loading / Auth states -->
+  <div id="loading-screen">
+    <h2>Loading your business dashboard...</h2>
+    <div style="font-size:1.8rem;">⋯</div>
+  </div>
+
+  <div id="login-required" style="display:none">
+    <h1>Please Sign In</h1>
+    <p>You need to be logged in to access your business dashboard.</p>
+    <a href="/login.html" style="padding:0.8rem 1.8rem; background:var(--primary); color:white; border-radius:8px; text-decoration:none; margin-top:1rem; display:inline-block;">
+      Go to Login
+    </a>
+  </div>
+
+  <!-- Main Dashboard -->
+  <div id="dashboard-content">
+
+    <header>
+      <div class="logo">AllBusiness</div>
+      <div>
+        <button id="btn-logout" style="padding:0.6rem 1.3rem; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer;">
+          Sign Out
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <div class="welcome">
+        <h1>Welcome back, <span id="owner-name">Business Owner</span>!</h1>
+        <p id="business-name" style="font-size:1.3rem; color:#64748b; margin-top:0.3rem;">Your Business</p>
+      </div>
+
+      <div class="grid-stats">
+        <div class="stat-card">
+          <div class="label">Orders Today</div>
+          <div class="value">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Revenue This Month</div>
+          <div class="value">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Active Customers</div>
+          <div class="value">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Pending Tasks</div>
+          <div class="value">—</div>
+        </div>
+      </div>
+
+      <!-- You can add more sections here: recent orders, charts, quick actions, etc -->
+    </main>
+  </div>
+
+</body>
+</html>
