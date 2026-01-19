@@ -12,7 +12,7 @@
       --danger: #e74c3c;
       --light: #f8fbff;
       --dark: #2c3e50;
-      --glass: rgba(255,255,255,0.85);
+      --glass: rgba(255,255,255,0.9);
       --shadow: 0 8px 32px rgba(31,38,135,0.12);
     }
 
@@ -20,22 +20,24 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, sans-serif;
     }
 
     body {
       background: var(--light);
       color: var(--dark);
       min-height: 100vh;
+      font-size: 16px;           /* Base font size - good starting point */
+      line-height: 1.5;
     }
 
+    /* HEADER / NAV */
     header {
-      background: white;
-      padding: 1.2rem 5%;
-      box-shadow: 0 2px 15px rgba(0,0,0,0.08);
       position: sticky;
       top: 0;
       z-index: 100;
+      background: white;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      padding: 0.9rem 5%;
     }
 
     .nav {
@@ -44,18 +46,31 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
     .logo {
-      font-size: 1.8rem;
+      font-size: clamp(1.5rem, 4.5vw, 1.9rem);
       font-weight: 800;
       color: var(--primary);
+      white-space: nowrap;
     }
 
+    /* MAIN CONTENT */
     .container {
-      max-width: 1100px;
-      margin: 2.5rem auto;
+      max-width: 1200px;
+      margin: 2rem auto;
       padding: 0 5%;
+      width: 100%;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: clamp(1.2rem, 4vw, 2rem);
+      margin-bottom: 1.8rem;
+      box-shadow: var(--shadow);
     }
 
     h1, h2 {
@@ -63,19 +78,12 @@
       margin-bottom: 1.2rem;
     }
 
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow);
-    }
-
+    /* Info Grid */
     .info-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
-      margin: 1.8rem 0;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+      margin: 1.5rem 0;
     }
 
     .info-item {
@@ -93,27 +101,28 @@
       font-size: 0.95rem;
     }
 
+    /* Stats Grid */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-      margin: 2rem 0;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.2rem;
+      margin: 1.8rem 0;
     }
 
     .stat-card {
       text-align: center;
-      padding: 1.8rem;
-      background: linear-gradient(135deg, #667eea22, #764ba222);
+      padding: 1.5rem 1rem;
+      background: linear-gradient(135deg, rgba(102,126,234,0.12), rgba(118,75,162,0.12));
       border-radius: 16px;
-      color: white;
     }
 
     .stat-number {
-      font-size: 2.6rem;
+      font-size: clamp(1.9rem, 6vw, 2.8rem);
       font-weight: 800;
-      margin: 0.6rem 0;
+      margin: 0.5rem 0;
     }
 
+    /* Enquiries */
     .recent-enquiries {
       margin-top: 2.5rem;
     }
@@ -121,23 +130,26 @@
     .enquiry {
       padding: 1.2rem;
       border-left: 4px solid var(--primary);
-      background: rgba(74,144,226,0.05);
+      background: rgba(74,144,226,0.04);
       margin-bottom: 1rem;
       border-radius: 0 12px 12px 0;
     }
 
+    /* Buttons & Status */
     .logout-btn {
+      padding: 0.7rem 1.4rem;
+      border-radius: 50px;
       background: var(--danger);
       color: white;
       border: none;
-      padding: 0.7rem 1.6rem;
-      border-radius: 50px;
+      font-size: 0.95rem;
       cursor: pointer;
-      font-weight: 500;
+      white-space: nowrap;
     }
 
     .status {
-      padding: 0.35rem 1rem;
+      display: inline-block;
+      padding: 0.4rem 1rem;
       border-radius: 50px;
       font-size: 0.85rem;
       font-weight: 600;
@@ -153,8 +165,65 @@
       color: #777;
     }
 
+    /* ==========================================
+       RESPONSIVE BREAKPOINTS
+       ========================================== */
     @media (max-width: 768px) {
-      .stats-grid { grid-template-columns: 1fr; }
+      header {
+        padding: 0.8rem 5%;
+      }
+
+      .nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+      }
+
+      .container {
+        padding: 0 4%;
+        margin: 1.2rem auto;
+      }
+
+      .card {
+        padding: 1.4rem;
+      }
+
+      .info-grid,
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 1.9rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .stat-card {
+        padding: 1.3rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo {
+        font-size: 1.5rem;
+      }
+
+      .logout-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 2.2rem;
+      }
+
+      .enquiry {
+        padding: 1rem;
+        font-size: 0.94rem;
+      }
     }
   </style>
 
@@ -191,10 +260,8 @@
     const auth = getAuth(app);
     const database = getDatabase(app);
 
-    // ── Global references ──────────────────────────────────────
     let currentUserUid = null;
 
-    // ── DOM Elements ───────────────────────────────────────────
     const elements = {
       loading: document.createElement('div'),
       businessName: document.getElementById('businessName'),
@@ -207,15 +274,13 @@
       enquiriesList: document.getElementById('enquiriesList')
     };
 
-    // Create loading element
     elements.loading.className = 'loading';
     elements.loading.textContent = 'Loading your dashboard...';
     document.body.appendChild(elements.loading);
 
-    // ── Auth state listener ────────────────────────────────────
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        window.location.href = "index.html"; // redirect to main page/login
+        window.location.href = "index.html";
         return;
       }
 
@@ -224,7 +289,6 @@
       loadRecentEnquiries();
     });
 
-    // ── Load main business data ────────────────────────────────
     function loadBusinessData() {
       const businessRef = ref(database, `businesses/${currentUserUid}`);
 
@@ -250,17 +314,14 @@
           ? new Date(data.createdAt).toLocaleDateString('en-ZA') 
           : '—';
 
-        // You can implement real status logic later
         elements.status.textContent = 'Online';
         elements.status.className = 'status online';
-
-        // Mock stats - replace with real counters later
+        
         elements.viewsCount.textContent = data.views || Math.floor(Math.random() * 800) + 120;
         elements.enquiriesCount.textContent = data.enquiryCount || Math.floor(Math.random() * 40) + 3;
-      }, { onlyOnce: false });
+      });
     }
 
-    // ── Load recent enquiries (example structure) ──────────────
     function loadRecentEnquiries() {
       const enquiriesRef = ref(database, `enquiries/${currentUserUid}`);
       const recentQuery = query(enquiriesRef, orderByChild('timestamp'), limitToLast(5));
@@ -297,7 +358,6 @@
       });
     }
 
-    // Logout
     document.getElementById('logoutBtn')?.addEventListener('click', () => {
       signOut(auth).then(() => {
         window.location.href = "index.html";
