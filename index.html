@@ -1,394 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AllBusiness - Business Dashboard (Realtime DB)</title>
-
-  <!-- Firebase Modular SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-    import { 
-      getAuth, 
-      onAuthStateChanged, 
-      signOut 
-    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-
-    import { 
-      getDatabase,
-      ref,
-      get,
-      query as rtdbQuery,
-      orderByChild,
-      limitToLast,
-      equalTo,
-      onValue,
-      off
-    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
-
-    // Your Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAojYRIH8FJL5B8yg1b3qxsc29vB3vLC-8",
-      authDomain: "allbusiness-596cc.firebaseapp.com",
-      databaseURL: "https://allbusiness-596cc-default-rtdb.firebaseio.com", // ← IMPORTANT! Add your real DB URL
-      projectId: "allbusiness-596cc",
-      storageBucket: "allbusiness-596cc.firebasestorage.app",
-      messagingSenderId: "665302840524",
-      appId: "1:665302840524:web:e9c1078e14bc0de6a87e69",
-      measurementId: "G-EMZFX7CE8V"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-
-    // ────────────────────────────────────────────────
-    // Global state & listeners cleanup
-    // ────────────────────────────────────────────────
-    let currentBusiness = null;
-    let ordersListenerRef = null;
-
-    // ────────────────────────────────────────────────
-    // DOM Elements
-    // ────────────────────────────────────────────────
-    const els = {
-      loading: document.getElementById('loading-screen'),
-      authRequired: document.getElementById('auth-required'),
-      dashboard: document.getElementById('dashboard'),
-      businessName: document.getElementById('business-name'),
-      statsCards: document.querySelector('.stats-cards'),
-      recentOrdersBody: document.getElementById('recent-orders'),
-      logoutBtn: document.getElementById('logout-btn')
-    };
-
-    // ────────────────────────────────────────────────
-    // Auth State Listener
-    // ────────────────────────────────────────────────
-    onAuthStateChanged(auth, async (user) => {
-      els.loading.style.display = 'none';
-
-      if (!user) {
-        els.authRequired.style.display = 'flex';
-        els.dashboard.style.display = 'none';
-        cleanupListeners();
-        return;
-      }
-
-      try {
-        const businessRef = ref(db, `businesses/${user.uid}`);
-        const snapshot = await get(businessRef);
-
-        if (!snapshot.exists()) {
-          showError("Business profile not found. Please register first.");
-          els.authRequired.innerHTML = `
-            <h2>No business profile</h2>
-            <p>Please complete registration first.</p>
-            <a href="/register.html" class="btn">Register Business</a>
-          `;
-          els.authRequired.style.display = 'flex';
-          return;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AllBusiness - Professional Dashboard</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #50e3c2;
+            --accent: #f5a623;
+            --dark: #2c3e50;
+            --glass: rgba(255,255,255,0.8);
+            --shadow: 0 8px 32px rgba(31,38,135,0.15);
         }
 
-        currentBusiness = { id: user.uid, ...snapshot.val() };
-        renderDashboard();
-      } catch (err) {
-        console.error("Error loading business:", err);
-        showError("Failed to load your business data.");
-      }
-    });
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+        body { background:#f0f4f8; color:#222; overflow-x:hidden; }
 
-    // ────────────────────────────────────────────────
-    // Render Dashboard + Real-time Orders
-    // ────────────────────────────────────────────────
-    function renderDashboard() {
-      els.authRequired.style.display = 'none';
-      els.dashboard.style.display = 'block';
-
-      els.businessName.textContent = currentBusiness.name || currentBusiness.businessName || "Your Business";
-
-      // Quick stats (placeholder - in real app use aggregated node or Cloud Function)
-      updateStatsPlaceholder();
-
-      // Real-time recent orders (last 8)
-      loadAndListenRecentOrders();
-    }
-
-    function updateStatsPlaceholder() {
-      // In production → read from /businessStats/{uid} maintained by Cloud Functions
-      const fake = {
-        todaySales: "R18,920",
-        newCustomers: 12,
-        pendingOrders: 7,
-        rating: "4.8"
-      };
-
-      els.statsCards.innerHTML = `
-        <div class="stat-card"><h3>Today's Sales</h3><p class="value">${fake.todaySales}</p></div>
-        <div class="stat-card highlight"><h3>New Customers</h3><p class="value">${fake.newCustomers}</p></div>
-        <div class="stat-card"><h3>Pending Orders</h3><p class="value">${fake.pendingOrders}</p></div>
-        <div class="stat-card"><h3>Rating</h3><p class="value">${fake.rating} ★</p></div>
-      `;
-    }
-
-    function loadAndListenRecentOrders() {
-      const ordersRef = ref(db, 'orders');
-      const recentQuery = rtdbQuery(
-        ordersRef,
-        orderByChild('createdAt'),
-        limitToLast(8),
-        equalTo(currentBusiness.id, 'businessId') // ← filter by business
-      );
-
-      // Clean up previous listener if exists
-      if (ordersListenerRef) off(ordersListenerRef);
-
-      ordersListenerRef = onValue(recentQuery, (snapshot) => {
-        const tbody = els.recentOrdersBody;
-        tbody.innerHTML = '';
-
-        if (!snapshot.exists()) {
-          tbody.innerHTML = '<tr><td colspan="5" class="empty">No recent orders yet...</td></tr>';
-          return;
+        header {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: var(--glass); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            box-shadow: var(--shadow);
         }
 
-        const orders = [];
-        snapshot.forEach(child => {
-          orders.push({ id: child.key, ...child.val() });
-        });
+        .navbar {
+            max-width: 1200px; margin: 0 auto; padding: 1rem 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
 
-        // Sort descending by timestamp (since limitToLast gives oldest→newest)
-        orders.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
 
-        orders.forEach(order => {
-          const date = order.createdAt 
-            ? new Date(order.createdAt).toLocaleDateString('en-ZA')
-            : '—';
+        .search-bar { display: flex; background: white; border-radius: 50px; padding: 5px; border: 1px solid #ddd; }
+        .search-bar input { border: none; padding: 0.5rem 1rem; border-radius: 50px; outline: none; }
+        .search-bar button { background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 50px; cursor: pointer; }
 
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>#${order.orderNumber || order.id.slice(0,8)}</td>
-            <td>${order.customerName || 'Guest'}</td>
-            <td>R${(order.total || 0).toLocaleString()}</td>
-            <td><span class="status ${order.status?.toLowerCase() || 'pending'}">
-              ${order.status || 'Pending'}
-            </span></td>
-            <td>${date}</td>
-          `;
-          tbody.appendChild(row);
-        });
-      }, (err) => {
-        console.error("Orders listener error:", err);
-        els.recentOrdersBody.innerHTML = '<tr><td colspan="5">Error loading orders</td></tr>';
-      });
-    }
+        section { padding: 8rem 2rem 4rem; max-width: 1200px; margin: 0 auto; }
+        .hidden { display: none !important; }
 
-    function cleanupListeners() {
-      if (ordersListenerRef) {
-        off(ordersListenerRef);
-        ordersListenerRef = null;
-      }
-    }
+        /* Dashboard Layout */
+        .dash-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; margin-top: 2rem; }
+        .stat-card, .info-card, .lead-card { background: white; padding: 2rem; border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 1.5rem; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; background: #e8f5e9; color: #2e7d32; }
 
-    function showError(msg) {
-      const el = document.createElement('div');
-      el.className = 'error-message';
-      el.textContent = msg;
-      document.body.prepend(el);
-      setTimeout(() => el.remove(), 6500);
-    }
+        /* Leads List */
+        .lead-item { padding: 15px; border-bottom: 1px solid #eee; position: relative; }
+        .lead-item:last-child { border: none; }
+        .lead-item small { color: #999; }
 
-    // Logout
-    els.logoutBtn?.addEventListener('click', async () => {
-      try {
-        cleanupListeners();
-        await signOut(auth);
-        window.location.href = "/";
-      } catch (err) {
-        console.error("Logout failed:", err);
-      }
-    });
-  </script>
+        /* Business Cards */
+        #searchResults { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+        .biz-card { background: white; padding: 1.5rem; border-radius: 15px; box-shadow: var(--shadow); }
 
-  <style>
-    :root {
-      --primary: #0066ff;
-      --primary-dark: #004dcc;
-      --success: #00c853;
-      --warning: #ffab00;
-      --danger: #d50000;
-      --gray-100: #f8f9fc;
-      --gray-700: #5a5c69;
-    }
-
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: var(--gray-100);
-      color: #333;
-      min-height: 100vh;
-    }
-
-    .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
-
-    header {
-      background: white;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .logo { font-weight: bold; font-size: 1.6rem; color: var(--primary); }
-
-    .welcome { font-size: 1.1rem; color: var(--gray-700); }
-
-    main { padding: 2rem 0; }
-
-    h1 { color: #222; margin-bottom: 1.5rem; }
-
-    .stats-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem;
-      margin: 2rem 0;
-    }
-
-    .stat-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-      transition: transform 0.2s;
-    }
-
-    .stat-card:hover { transform: translateY(-5px); }
-
-    .stat-card h3 { color: var(--gray-700); margin-bottom: 0.5rem; font-size: 0.95rem; }
-    .value { font-size: 2.1rem; font-weight: 700; }
-
-    .highlight .value { color: var(--primary); }
-
-    .recent-activity {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-      padding: 1.5rem;
-      overflow-x: auto;
-    }
-
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
-    th { color: var(--gray-700); font-weight: 600; }
-
-    .status {
-      padding: 0.35rem 0.9rem;
-      border-radius: 30px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    .status.pending    { background:#fff3cd; color:#856404; }
-    .status.processing { background:#cce5ff; color:#004085; }
-    .status.completed  { background:#d4edda; color:#155724; }
-    .status.cancelled  { background:#f8d7da; color:#721c24; }
-
-    .empty { text-align:center; padding:3rem; color:#777; font-style:italic; }
-
-    .auth-screen, .loading-screen {
-      min-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      gap: 1.5rem;
-    }
-
-    .btn {
-      padding: 0.9rem 1.8rem;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .btn:hover { background: var(--primary-dark); }
-
-    .error-message {
-      position: fixed;
-      top: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #f44336;
-      color: white;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      z-index: 1000;
-    }
-
-    #logout-btn {
-      margin-left: 1rem;
-      padding: 0.6rem 1.3rem;
-      background: #f44336;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-  </style>
+        .modal { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
+            display: none; justify-content: center; align-items: center; z-index: 2000; 
+        }
+        .modal-content { background: white; padding: 2.5rem; border-radius: 20px; width: 400px; }
+        input { width: 100%; padding: 0.8rem; margin: 0.5rem 0; border: 1px solid #ddd; border-radius: 8px; }
+        .btn-main { width: 100%; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-main:hover { opacity: 0.9; transform: translateY(-2px); }
+        
+        #logoutBtn { background: #ff4757; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; }
+    </style>
 </head>
 <body>
 
-  <div id="loading-screen" class="loading-screen auth-screen">
-    <h2>Loading dashboard...</h2>
-  </div>
-
-  <div id="auth-required" class="auth-screen" style="display:none;">
-    <h1>Please sign in</h1>
-    <p>You need to be logged in as a registered business.</p>
-    <a href="/login.html" class="btn">Sign In</a>
-  </div>
-
-  <div id="dashboard" style="display:none;">
     <header>
-      <div class="logo">AllBusiness</div>
-      <div class="welcome">
-        Welcome back, <span id="business-name">Business</span>!
-        <button id="logout-btn">Logout</button>
-      </div>
+        <nav class="navbar">
+            <div class="logo">AllBusiness</div>
+            
+            <div id="publicNav" class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search category (e.g. gym)...">
+                <button onclick="searchBusinesses()">Search</button>
+            </div>
+
+            <div class="auth-zone">
+                <button id="regBtn" class="btn-main" style="padding: 0.5rem 1rem; width: auto;">Register Business</button>
+                <button id="logoutBtn" class="hidden">Logout</button>
+            </div>
+        </nav>
     </header>
 
-    <div class="container">
-      <h1>Business Dashboard</h1>
+    <main id="publicView">
+        <section>
+            <h1 style="font-size: 3rem; color: var(--dark); text-align: center;">Find & Support Local.</h1>
+            <div id="searchResults">
+                <p style="text-align: center; grid-column: 1/-1; color: #888;">Enter a category above to find local businesses.</p>
+            </div>
+        </section>
+    </main>
 
-      <div class="stats-cards"></div>
+    <main id="dashboardView" class="hidden">
+        <section>
+            <div style="display:flex; justify-content: space-between; align-items: center;">
+                <h1 id="welcomeUser">Dashboard</h1>
+                <span class="status-badge">● Real-time Sync Active</span>
+            </div>
 
-      <div class="recent-activity">
-        <h2>Recent Orders • Live Updates</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Order</th>
-              <th>Customer</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody id="recent-orders">
-            <tr><td colspan="5">Loading real-time orders...</td></tr>
-          </tbody>
-        </table>
-      </div>
+            <div class="dash-grid">
+                <div class="side-col">
+                    <div class="stat-card">
+                        <small>Active Leads</small>
+                        <h2 id="leadCount" style="font-size: 3rem; color: var(--primary);">0</h2>
+                        <p style="color: #27ae60; font-size: 0.8rem;">Recent inquiries</p>
+                    </div>
+                    <div class="info-card">
+                        <h4 style="margin-bottom:10px">Profile Data</h4>
+                        <p><strong>Category:</strong> <span id="dashCat">...</span></p>
+                        <p><strong>Owner:</strong> <span id="dashEmail">...</span></p>
+                    </div>
+                </div>
+
+                <div class="main-col">
+                    <div class="lead-card">
+                        <h3 style="margin-bottom: 1rem;">Customer Leads (Real-time)</h3>
+                        <div id="leadsList">
+                            <p style="color:#aaa">No messages yet. When customers find you, their messages will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="regModal" class="modal">
+        <div class="modal-content">
+            <h2>Business Registration</h2>
+            <input type="text" id="regName" placeholder="Business Name">
+            <input type="text" id="regCat" placeholder="Category (plumbing, food, etc)">
+            <input type="email" id="regEmail" placeholder="Email Address">
+            <input type="password" id="regPass" placeholder="Password">
+            <button id="submitReg" class="btn-main">Create Dashboard</button>
+            <button onclick="document.getElementById('regModal').style.display='none'" style="background:none; border:none; width:100%; margin-top:10px; cursor:pointer; color:#999;">Cancel</button>
+        </div>
     </div>
-  </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs, onSnapshot, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+        // Your specific config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAojYRIH8FJL5B8yg1b3qxsc29vB3vLC-8",
+            authDomain: "allbusiness-596cc.firebaseapp.com",
+            projectId: "allbusiness-596cc",
+            storageBucket: "allbusiness-596cc.firebasestorage.app",
+            messagingSenderId: "665302840524",
+            appId: "1:665302840524:web:e9c1078e14bc0de6a87e69",
+            measurementId: "G-EMZFX7CE8V"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- AUTH TRACKING ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                toggleUI('dashboard');
+                initDashboard(user.uid);
+            } else {
+                toggleUI('public');
+            }
+        });
+
+        function toggleUI(mode) {
+            document.getElementById('publicView').style.display = (mode === 'dashboard') ? 'none' : 'block';
+            document.getElementById('dashboardView').style.display = (mode === 'dashboard') ? 'block' : 'none';
+            document.getElementById('regBtn').classList.toggle('hidden', mode === 'dashboard');
+            document.getElementById('logoutBtn').classList.toggle('hidden', mode === 'public');
+            document.getElementById('publicNav').classList.toggle('hidden', mode === 'dashboard');
+        }
+
+        // --- DASHBOARD REAL-TIME SYNC ---
+        function initDashboard(uid) {
+            // Sync Profile Info
+            const qBiz = query(collection(db, "businesses"), where("uid", "==", uid));
+            onSnapshot(qBiz, (snap) => {
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    document.getElementById('welcomeUser').textContent = d.name;
+                    document.getElementById('dashCat').textContent = d.category;
+                    document.getElementById('dashEmail').textContent = d.email;
+                });
+            });
+
+            // Sync Leads (Messages)
+            const qLeads = query(collection(db, "leads"), where("businessUid", "==", uid), orderBy("createdAt", "desc"));
+            onSnapshot(qLeads, (snap) => {
+                const list = document.getElementById('leadsList');
+                const count = document.getElementById('leadCount');
+                list.innerHTML = '';
+                count.textContent = snap.size;
+
+                if(snap.empty) list.innerHTML = '<p style="color:#aaa">No messages yet.</p>';
+
+                snap.forEach(doc => {
+                    const lead = doc.data();
+                    list.innerHTML += `
+                        <div class="lead-item">
+                            <strong>New Inquiry</strong><br>
+                            <small>${lead.createdAt?.toDate().toLocaleString() || 'Just now'}</small>
+                            <p style="margin-top:5px; color:#555">A customer is interested in your <b>${lead.category}</b> services!</p>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        // --- SEARCH & SEND LEAD ---
+        window.searchBusinesses = async () => {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Searching...</p>';
+
+            const q = query(collection(db, "businesses"), where("category", "==", term));
+            const snap = await getDocs(q);
+            
+            resultsDiv.innerHTML = '';
+            if(snap.empty) resultsDiv.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No results found.</p>';
+            
+            snap.forEach(doc => {
+                const d = doc.data();
+                const card = document.createElement('div');
+                card.className = 'biz-card';
+                card.innerHTML = `
+                    <h3 style="color:var(--primary)">${d.name}</h3>
+                    <p style="text-transform: capitalize;">${d.category}</p>
+                    <button class="btn-main" style="margin-top:15px; font-size:0.8rem;">Send Inquiry</button>
+                `;
+                // Add event to button to send a lead
+                card.querySelector('button').onclick = () => sendLead(d.uid, d.category);
+                resultsDiv.appendChild(card);
+            });
+        };
+
+        async function sendLead(bizUid, cat) {
+            try {
+                await addDoc(collection(db, "leads"), {
+                    businessUid: bizUid,
+                    category: cat,
+                    createdAt: serverTimestamp()
+                });
+                alert("Message sent to business! (Owner will see this in real-time)");
+            } catch (e) { console.error(e); }
+        }
+
+        // --- REGISTRATION ---
+        document.getElementById('submitReg').onclick = async () => {
+            const name = document.getElementById('regName').value;
+            const cat = document.getElementById('regCat').value.toLowerCase();
+            const email = document.getElementById('regEmail').value;
+            const pass = document.getElementById('regPass').value;
+
+            try {
+                const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+                await addDoc(collection(db, "businesses"), {
+                    name, category: cat, email, uid: userCred.user.uid, createdAt: serverTimestamp()
+                });
+                document.getElementById('regModal').style.display = 'none';
+            } catch (err) { alert(err.message); }
+        };
+
+        document.getElementById('regBtn').onclick = () => document.getElementById('regModal').style.display = 'flex';
+        document.getElementById('logoutBtn').onclick = () => signOut(auth);
+    </script>
 </body>
 </html>
