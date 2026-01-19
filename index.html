@@ -3,231 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AllBusiness - Business Dashboard</title>
-  
-  <style>
-    :root {
-      --primary: #4a90e2;
-      --secondary: #50e3c2;
-      --danger: #e74c3c;
-      --light: #f8fbff;
-      --dark: #2c3e50;
-      --glass: rgba(255,255,255,0.9);
-      --shadow: 0 8px 32px rgba(31,38,135,0.12);
-    }
+  <title>AllBusiness - Business Dashboard (Realtime DB)</title>
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: var(--light);
-      color: var(--dark);
-      min-height: 100vh;
-      font-size: 16px;           /* Base font size - good starting point */
-      line-height: 1.5;
-    }
-
-    /* HEADER / NAV */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: white;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-      padding: 0.9rem 5%;
-    }
-
-    .nav {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .logo {
-      font-size: clamp(1.5rem, 4.5vw, 1.9rem);
-      font-weight: 800;
-      color: var(--primary);
-      white-space: nowrap;
-    }
-
-    /* MAIN CONTENT */
-    .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 5%;
-      width: 100%;
-    }
-
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: clamp(1.2rem, 4vw, 2rem);
-      margin-bottom: 1.8rem;
-      box-shadow: var(--shadow);
-    }
-
-    h1, h2 {
-      color: var(--primary);
-      margin-bottom: 1.2rem;
-    }
-
-    /* Info Grid */
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.2rem;
-      margin: 1.5rem 0;
-    }
-
-    .info-item {
-      background: var(--glass);
-      padding: 1.3rem;
-      border-radius: 12px;
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(74,144,226,0.15);
-    }
-
-    .info-item strong {
-      display: block;
-      color: var(--primary);
-      margin-bottom: 0.4rem;
-      font-size: 0.95rem;
-    }
-
-    /* Stats Grid */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1.2rem;
-      margin: 1.8rem 0;
-    }
-
-    .stat-card {
-      text-align: center;
-      padding: 1.5rem 1rem;
-      background: linear-gradient(135deg, rgba(102,126,234,0.12), rgba(118,75,162,0.12));
-      border-radius: 16px;
-    }
-
-    .stat-number {
-      font-size: clamp(1.9rem, 6vw, 2.8rem);
-      font-weight: 800;
-      margin: 0.5rem 0;
-    }
-
-    /* Enquiries */
-    .recent-enquiries {
-      margin-top: 2.5rem;
-    }
-
-    .enquiry {
-      padding: 1.2rem;
-      border-left: 4px solid var(--primary);
-      background: rgba(74,144,226,0.04);
-      margin-bottom: 1rem;
-      border-radius: 0 12px 12px 0;
-    }
-
-    /* Buttons & Status */
-    .logout-btn {
-      padding: 0.7rem 1.4rem;
-      border-radius: 50px;
-      background: var(--danger);
-      color: white;
-      border: none;
-      font-size: 0.95rem;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .status {
-      display: inline-block;
-      padding: 0.4rem 1rem;
-      border-radius: 50px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    .status.online { background:#2ecc71; color:white; }
-    .status.offline { background:#e74c3c; color:white; }
-
-    .loading {
-      text-align: center;
-      padding: 4rem;
-      font-size: 1.3rem;
-      color: #777;
-    }
-
-    /* ==========================================
-       RESPONSIVE BREAKPOINTS
-       ========================================== */
-    @media (max-width: 768px) {
-      header {
-        padding: 0.8rem 5%;
-      }
-
-      .nav {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.8rem;
-      }
-
-      .container {
-        padding: 0 4%;
-        margin: 1.2rem auto;
-      }
-
-      .card {
-        padding: 1.4rem;
-      }
-
-      .info-grid,
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-
-      h1 {
-        font-size: 1.9rem;
-      }
-
-      h2 {
-        font-size: 1.5rem;
-      }
-
-      .stat-card {
-        padding: 1.3rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .logo {
-        font-size: 1.5rem;
-      }
-
-      .logout-btn {
-        width: 100%;
-        text-align: center;
-      }
-
-      .stat-number {
-        font-size: 2.2rem;
-      }
-
-      .enquiry {
-        padding: 1rem;
-        font-size: 0.94rem;
-      }
-    }
-  </style>
-
-  <!-- Firebase Realtime Database v9 modular -->
+  <!-- Firebase Modular SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import { 
@@ -235,192 +13,379 @@
       onAuthStateChanged, 
       signOut 
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-    
+
     import { 
-      getDatabase, 
-      ref, 
-      onValue, 
-      query, 
-      orderByChild, 
-      limitToLast 
+      getDatabase,
+      ref,
+      get,
+      query as rtdbQuery,
+      orderByChild,
+      limitToLast,
+      equalTo,
+      onValue,
+      off
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
+    // Your Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAojYRIH8FJL5B8yg1b3qxsc29vB3vLC-8",
       authDomain: "allbusiness-596cc.firebaseapp.com",
+      databaseURL: "https://allbusiness-596cc-default-rtdb.firebaseio.com", // ← IMPORTANT! Add your real DB URL
       projectId: "allbusiness-596cc",
       storageBucket: "allbusiness-596cc.firebasestorage.app",
       messagingSenderId: "665302840524",
       appId: "1:665302840524:web:e9c1078e14bc0de6a87e69",
-      measurementId: "G-EMZFX7CE8V",
-      databaseURL: "https://allbusiness-596cc-default-rtdb.firebaseio.com/"
+      measurementId: "G-EMZFX7CE8V"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const database = getDatabase(app);
+    const db = getDatabase(app);
 
-    let currentUserUid = null;
+    // ────────────────────────────────────────────────
+    // Global state & listeners cleanup
+    // ────────────────────────────────────────────────
+    let currentBusiness = null;
+    let ordersListenerRef = null;
 
-    const elements = {
-      loading: document.createElement('div'),
-      businessName: document.getElementById('businessName'),
-      category: document.getElementById('category'),
-      email: document.getElementById('email'),
-      joinedDate: document.getElementById('joinedDate'),
-      status: document.getElementById('status'),
-      viewsCount: document.getElementById('viewsCount'),
-      enquiriesCount: document.getElementById('enquiriesCount'),
-      enquiriesList: document.getElementById('enquiriesList')
+    // ────────────────────────────────────────────────
+    // DOM Elements
+    // ────────────────────────────────────────────────
+    const els = {
+      loading: document.getElementById('loading-screen'),
+      authRequired: document.getElementById('auth-required'),
+      dashboard: document.getElementById('dashboard'),
+      businessName: document.getElementById('business-name'),
+      statsCards: document.querySelector('.stats-cards'),
+      recentOrdersBody: document.getElementById('recent-orders'),
+      logoutBtn: document.getElementById('logout-btn')
     };
 
-    elements.loading.className = 'loading';
-    elements.loading.textContent = 'Loading your dashboard...';
-    document.body.appendChild(elements.loading);
+    // ────────────────────────────────────────────────
+    // Auth State Listener
+    // ────────────────────────────────────────────────
+    onAuthStateChanged(auth, async (user) => {
+      els.loading.style.display = 'none';
 
-    onAuthStateChanged(auth, (user) => {
       if (!user) {
-        window.location.href = "index.html";
+        els.authRequired.style.display = 'flex';
+        els.dashboard.style.display = 'none';
+        cleanupListeners();
         return;
       }
 
-      currentUserUid = user.uid;
-      loadBusinessData();
-      loadRecentEnquiries();
+      try {
+        const businessRef = ref(db, `businesses/${user.uid}`);
+        const snapshot = await get(businessRef);
+
+        if (!snapshot.exists()) {
+          showError("Business profile not found. Please register first.");
+          els.authRequired.innerHTML = `
+            <h2>No business profile</h2>
+            <p>Please complete registration first.</p>
+            <a href="/register.html" class="btn">Register Business</a>
+          `;
+          els.authRequired.style.display = 'flex';
+          return;
+        }
+
+        currentBusiness = { id: user.uid, ...snapshot.val() };
+        renderDashboard();
+      } catch (err) {
+        console.error("Error loading business:", err);
+        showError("Failed to load your business data.");
+      }
     });
 
-    function loadBusinessData() {
-      const businessRef = ref(database, `businesses/${currentUserUid}`);
+    // ────────────────────────────────────────────────
+    // Render Dashboard + Real-time Orders
+    // ────────────────────────────────────────────────
+    function renderDashboard() {
+      els.authRequired.style.display = 'none';
+      els.dashboard.style.display = 'block';
 
-      onValue(businessRef, (snapshot) => {
-        elements.loading.style.display = 'none';
+      els.businessName.textContent = currentBusiness.name || currentBusiness.businessName || "Your Business";
 
-        if (!snapshot.exists()) {
-          document.querySelector('.container').innerHTML = `
-            <div class="card" style="text-align:center; padding:4rem;">
-              <h2>Business profile not found</h2>
-              <p>Please register your business first.</p>
-              <a href="index.html" style="color:var(--primary)">Go to home page</a>
-            </div>`;
-          return;
-        }
+      // Quick stats (placeholder - in real app use aggregated node or Cloud Function)
+      updateStatsPlaceholder();
 
-        const data = snapshot.val();
-
-        elements.businessName.textContent = data.name || 'Not set';
-        elements.category.textContent = data.category || '—';
-        elements.email.textContent = data.email || user.email || '—';
-        elements.joinedDate.textContent = data.createdAt 
-          ? new Date(data.createdAt).toLocaleDateString('en-ZA') 
-          : '—';
-
-        elements.status.textContent = 'Online';
-        elements.status.className = 'status online';
-        
-        elements.viewsCount.textContent = data.views || Math.floor(Math.random() * 800) + 120;
-        elements.enquiriesCount.textContent = data.enquiryCount || Math.floor(Math.random() * 40) + 3;
-      });
+      // Real-time recent orders (last 8)
+      loadAndListenRecentOrders();
     }
 
-    function loadRecentEnquiries() {
-      const enquiriesRef = ref(database, `enquiries/${currentUserUid}`);
-      const recentQuery = query(enquiriesRef, orderByChild('timestamp'), limitToLast(5));
+    function updateStatsPlaceholder() {
+      // In production → read from /businessStats/{uid} maintained by Cloud Functions
+      const fake = {
+        todaySales: "R18,920",
+        newCustomers: 12,
+        pendingOrders: 7,
+        rating: "4.8"
+      };
 
-      onValue(recentQuery, (snapshot) => {
-        const list = elements.enquiriesList;
-        list.innerHTML = '';
+      els.statsCards.innerHTML = `
+        <div class="stat-card"><h3>Today's Sales</h3><p class="value">${fake.todaySales}</p></div>
+        <div class="stat-card highlight"><h3>New Customers</h3><p class="value">${fake.newCustomers}</p></div>
+        <div class="stat-card"><h3>Pending Orders</h3><p class="value">${fake.pendingOrders}</p></div>
+        <div class="stat-card"><h3>Rating</h3><p class="value">${fake.rating} ★</p></div>
+      `;
+    }
+
+    function loadAndListenRecentOrders() {
+      const ordersRef = ref(db, 'orders');
+      const recentQuery = rtdbQuery(
+        ordersRef,
+        orderByChild('createdAt'),
+        limitToLast(8),
+        equalTo(currentBusiness.id, 'businessId') // ← filter by business
+      );
+
+      // Clean up previous listener if exists
+      if (ordersListenerRef) off(ordersListenerRef);
+
+      ordersListenerRef = onValue(recentQuery, (snapshot) => {
+        const tbody = els.recentOrdersBody;
+        tbody.innerHTML = '';
 
         if (!snapshot.exists()) {
-          list.innerHTML = '<p style="text-align:center;color:#777">No recent enquiries yet.</p>';
+          tbody.innerHTML = '<tr><td colspan="5" class="empty">No recent orders yet...</td></tr>';
           return;
         }
 
+        const orders = [];
         snapshot.forEach(child => {
-          const enq = child.val();
-          const date = new Date(enq.timestamp).toLocaleString('en-ZA', {
-            dateStyle: 'medium',
-            timeStyle: 'short'
-          });
-
-          const item = document.createElement('div');
-          item.className = 'enquiry';
-          item.innerHTML = `
-            <strong>${enq.name || 'Anonymous'}</strong>
-            <div style="margin:0.4rem 0;color:#555;font-size:0.95rem;">
-              ${enq.message || '—'}
-            </div>
-            <div style="color:#777;font-size:0.85rem;">
-              ${date} • ${enq.email || 'No email provided'}
-            </div>
-          `;
-          list.appendChild(item);
+          orders.push({ id: child.key, ...child.val() });
         });
+
+        // Sort descending by timestamp (since limitToLast gives oldest→newest)
+        orders.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+        orders.forEach(order => {
+          const date = order.createdAt 
+            ? new Date(order.createdAt).toLocaleDateString('en-ZA')
+            : '—';
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>#${order.orderNumber || order.id.slice(0,8)}</td>
+            <td>${order.customerName || 'Guest'}</td>
+            <td>R${(order.total || 0).toLocaleString()}</td>
+            <td><span class="status ${order.status?.toLowerCase() || 'pending'}">
+              ${order.status || 'Pending'}
+            </span></td>
+            <td>${date}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      }, (err) => {
+        console.error("Orders listener error:", err);
+        els.recentOrdersBody.innerHTML = '<tr><td colspan="5">Error loading orders</td></tr>';
       });
     }
 
-    document.getElementById('logoutBtn')?.addEventListener('click', () => {
-      signOut(auth).then(() => {
-        window.location.href = "index.html";
-      });
+    function cleanupListeners() {
+      if (ordersListenerRef) {
+        off(ordersListenerRef);
+        ordersListenerRef = null;
+      }
+    }
+
+    function showError(msg) {
+      const el = document.createElement('div');
+      el.className = 'error-message';
+      el.textContent = msg;
+      document.body.prepend(el);
+      setTimeout(() => el.remove(), 6500);
+    }
+
+    // Logout
+    els.logoutBtn?.addEventListener('click', async () => {
+      try {
+        cleanupListeners();
+        await signOut(auth);
+        window.location.href = "/";
+      } catch (err) {
+        console.error("Logout failed:", err);
+      }
     });
   </script>
+
+  <style>
+    :root {
+      --primary: #0066ff;
+      --primary-dark: #004dcc;
+      --success: #00c853;
+      --warning: #ffab00;
+      --danger: #d50000;
+      --gray-100: #f8f9fc;
+      --gray-700: #5a5c69;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--gray-100);
+      color: #333;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+
+    header {
+      background: white;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo { font-weight: bold; font-size: 1.6rem; color: var(--primary); }
+
+    .welcome { font-size: 1.1rem; color: var(--gray-700); }
+
+    main { padding: 2rem 0; }
+
+    h1 { color: #222; margin-bottom: 1.5rem; }
+
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      transition: transform 0.2s;
+    }
+
+    .stat-card:hover { transform: translateY(-5px); }
+
+    .stat-card h3 { color: var(--gray-700); margin-bottom: 0.5rem; font-size: 0.95rem; }
+    .value { font-size: 2.1rem; font-weight: 700; }
+
+    .highlight .value { color: var(--primary); }
+
+    .recent-activity {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      padding: 1.5rem;
+      overflow-x: auto;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
+    th { color: var(--gray-700); font-weight: 600; }
+
+    .status {
+      padding: 0.35rem 0.9rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status.pending    { background:#fff3cd; color:#856404; }
+    .status.processing { background:#cce5ff; color:#004085; }
+    .status.completed  { background:#d4edda; color:#155724; }
+    .status.cancelled  { background:#f8d7da; color:#721c24; }
+
+    .empty { text-align:center; padding:3rem; color:#777; font-style:italic; }
+
+    .auth-screen, .loading-screen {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 1.5rem;
+    }
+
+    .btn {
+      padding: 0.9rem 1.8rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .btn:hover { background: var(--primary-dark); }
+
+    .error-message {
+      position: fixed;
+      top: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #f44336;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+
+    #logout-btn {
+      margin-left: 1rem;
+      padding: 0.6rem 1.3rem;
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
-  <header>
-    <div class="nav">
-      <div class="logo">AllBusiness Dashboard</div>
-      <button id="logoutBtn" class="logout-btn">Logout</button>
-    </div>
-  </header>
+  <div id="loading-screen" class="loading-screen auth-screen">
+    <h2>Loading dashboard...</h2>
+  </div>
 
-  <div class="container">
-    <h1>Welcome back!</h1>
+  <div id="auth-required" class="auth-screen" style="display:none;">
+    <h1>Please sign in</h1>
+    <p>You need to be logged in as a registered business.</p>
+    <a href="/login.html" class="btn">Sign In</a>
+  </div>
 
-    <div class="card">
-      <h2>Business Information</h2>
-      <div class="info-grid">
-        <div class="info-item">
-          <strong>Business Name</strong>
-          <span id="businessName">Loading...</span>
-        </div>
-        <div class="info-item">
-          <strong>Category</strong>
-          <span id="category">Loading...</span>
-        </div>
-        <div class="info-item">
-          <strong>Email</strong>
-          <span id="email">Loading...</span>
-        </div>
-        <div class="info-item">
-          <strong>Member Since</strong>
-          <span id="joinedDate">Loading...</span>
-        </div>
-        <div class="info-item">
-          <strong>Status</strong>
-          <span id="status" class="status">Loading...</span>
-        </div>
+  <div id="dashboard" style="display:none;">
+    <header>
+      <div class="logo">AllBusiness</div>
+      <div class="welcome">
+        Welcome back, <span id="business-name">Business</span>!
+        <button id="logout-btn">Logout</button>
       </div>
-    </div>
+    </header>
 
-    <div class="card">
-      <h2>Performance Overview</h2>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div>Profile Views</div>
-          <div class="stat-number" id="viewsCount">—</div>
-        </div>
-        <div class="stat-card">
-          <div>Enquiries Received</div>
-          <div class="stat-number" id="enquiriesCount">—</div>
-        </div>
-      </div>
-    </div>
+    <div class="container">
+      <h1>Business Dashboard</h1>
 
-    <div class="card recent-enquiries">
-      <h2>Recent Enquiries</h2>
-      <div id="enquiriesList">
-        <div class="loading">Loading recent messages...</div>
+      <div class="stats-cards"></div>
+
+      <div class="recent-activity">
+        <h2>Recent Orders • Live Updates</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Customer</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="recent-orders">
+            <tr><td colspan="5">Loading real-time orders...</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
