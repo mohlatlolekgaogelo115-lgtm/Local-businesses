@@ -3,277 +3,381 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AllBusiness Dashboard</title>
+  <title>AllBusiness - Business Dashboard</title>
   
-  <!-- Firebase SDKs (modular v9+) -->
-  <script type="module">
-    // Import Firebase services
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-    import { 
-      getAuth, 
-      onAuthStateChanged, 
-      signOut 
-    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-    
-    import { 
-      getFirestore, 
-      doc, 
-      getDoc,
-      collection,
-      query,
-      where,
-      getDocs 
-    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-
-    // Your Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAojYRIH8FJL5B8yg1b3qxsc29vB3vLC-8",
-      authDomain: "allbusiness-596cc.firebaseapp.com",
-      projectId: "allbusiness-596cc",
-      storageBucket: "allbusiness-596cc.firebasestorage.app",
-      messagingSenderId: "665302840524",
-      appId: "1:665302840524:web:e9c1078e14bc0de6a87e69",
-      measurementId: "G-EMZFX7CE8V"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // ────────────────────────────────────────────────
-    // Global state
-    // ────────────────────────────────────────────────
-    let currentBusiness = null;
-
-    // ────────────────────────────────────────────────
-    // DOM Elements
-    // ────────────────────────────────────────────────
-    const elements = {
-      loading: document.getElementById('loading-screen'),
-      loginMessage: document.getElementById('login-required'),
-      dashboard: document.getElementById('dashboard-content'),
-      businessName: document.getElementById('business-name'),
-      ownerName: document.getElementById('owner-name'),
-      statsCards: document.querySelectorAll('.stat-card .value'),
-      logoutBtn: document.getElementById('btn-logout')
-    };
-
-    // ────────────────────────────────────────────────
-    // Auth state listener (main control flow)
-    // ────────────────────────────────────────────────
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        // Not logged in
-        elements.loading.style.display = 'none';
-        elements.loginMessage.style.display = 'flex';
-        elements.dashboard.style.display = 'none';
-        return;
-      }
-
-      try {
-        // Try to get business document (using uid as document id)
-        const businessRef = doc(db, "businesses", user.uid);
-        const businessSnap = await getDoc(businessRef);
-
-        if (!businessSnap.exists()) {
-          showError("No business profile found. Please complete registration first.");
-          elements.loading.style.display = 'none';
-          return;
-        }
-
-        currentBusiness = businessSnap.data();
-        
-        // Update UI
-        renderDashboard();
-        
-        elements.loading.style.display = 'none';
-        elements.loginMessage.style.display = 'none';
-        elements.dashboard.style.display = 'block';
-
-      } catch (error) {
-        console.error("Dashboard loading error:", error);
-        showError("Something went wrong while loading your dashboard...");
-      }
-    });
-
-    // ────────────────────────────────────────────────
-    // Render dashboard with business data
-    // ────────────────────────────────────────────────
-    function renderDashboard() {
-      elements.businessName.textContent = currentBusiness.businessName || "Your Business";
-      elements.ownerName.textContent = currentBusiness.ownerName || "Business Owner";
-
-      // Example stats - in real app you would query these from Firestore
-      const fakeStats = {
-        ordersToday: "18",
-        revenueThisMonth: "R142,800",
-        activeCustomers: "247",
-        pendingTasks: "5"
-      };
-
-      elements.statsCards[0].textContent = fakeStats.ordersToday;
-      elements.statsCards[1].textContent = fakeStats.revenueThisMonth;
-      elements.statsCards[2].textContent = fakeStats.activeCustomers;
-      elements.statsCards[3].textContent = fakeStats.pendingTasks;
-    }
-
-    function showError(message) {
-      alert(message);
-      // You can create a nicer error UI later
-    }
-
-    // Logout
-    elements.logoutBtn.addEventListener('click', async () => {
-      try {
-        await signOut(auth);
-        // Redirect will be handled by onAuthStateChanged
-      } catch (err) {
-        console.error("Logout failed:", err);
-      }
-    });
-  </script>
-
-  <!-- Styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  
   <style>
     :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --gray-100: #f3f4f6;
-      --gray-700: #374151;
-      --gray-900: #111827;
+      --primary: #4a90e2;
+      --primary-dark: #357abd;
+      --secondary: #50e3c2;
+      --danger: #e74c3c;
+      --dark: #2c3e50;
+      --light: #ecf0f1;
+      --gray: #7f8c8d;
+      --glass: rgba(255,255,255,0.78);
+      --shadow: 0 8px 32px rgba(31,38,135,0.12);
     }
 
-    * { margin:0; padding:0; box-sizing:border-box; }
+    * {
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
-      background: var(--gray-100);
-      color: var(--gray-900);
+      background: #f5f7fa;
+      color: #333;
       min-height: 100vh;
     }
 
-    header {
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
       background: white;
-      padding: 1rem 2rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border-right: 1px solid #e8ecef;
+      position: fixed;
+      width: 260px;
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow);
+      z-index: 100;
+    }
+
+    .sidebar-header {
+      padding: 2rem 1.5rem;
+      border-bottom: 1px solid #eee;
+      text-align: center;
+    }
+
+    .sidebar-header h2 {
+      color: var(--primary);
+      font-size: 1.9rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .sidebar-menu {
+      padding: 1.5rem 0;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.8rem;
+      color: #555;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.25s;
+    }
+
+    .sidebar-menu a:hover,
+    .sidebar-menu a.active {
+      background: rgba(74,144,226,0.08);
+      color: var(--primary);
+      border-left: 4px solid var(--primary);
+    }
+
+    .sidebar-menu i {
+      margin-right: 1.1rem;
+      width: 24px;
+      text-align: center;
+      font-size: 1.3rem;
+    }
+
+    .logout-btn {
+      margin-top: 3rem;
+      color: var(--danger) !important;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main-content {
+      margin-left: 260px;
+      padding: 2.5rem 3rem;
+      background: #f8f9fc;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .greeting h1 {
+      font-size: 2.1rem;
+      color: var(--dark);
+    }
+
+    .greeting p {
+      color: #666;
+      margin-top: 0.3rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.8rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.8rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .stat-icon {
+      font-size: 2.4rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .stat-number {
+      font-size: 2.4rem;
+      font-weight: 700;
+      margin: 0.4rem 0;
+      color: var(--dark);
+    }
+
+    .stat-label {
+      color: #666;
+      font-size: 1.05rem;
+    }
+
+    /* Recent Activity / Profile section */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    .card h3 {
+      margin-bottom: 1.4rem;
+      color: var(--dark);
+      font-size: 1.45rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
-
-    main {
-      max-width: 1400px;
-      margin: 2rem auto;
-      padding: 0 1.5rem;
-    }
-
-    .welcome {
-      margin-bottom: 2rem;
-    }
-
-    .grid-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .stat-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    }
-
-    .stat-card:hover { transform: translateY(-4px); }
-
-    .stat-card .label {
-      color: #64748b;
-      font-size: 0.9rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-card .value {
-      font-size: 2.1rem;
-      font-weight: 700;
-      color: var(--gray-900);
-    }
-
-    /* Full-screen states */
-    #loading-screen, #login-required {
-      position: fixed;
-      inset: 0;
-      background: white;
+    .activity-item {
+      padding: 1.2rem 0;
+      border-bottom: 1px solid #eee;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1.5rem;
-      z-index: 1000;
+      gap: 1.2rem;
     }
 
-    #dashboard-content { display: none; }
+    .activity-item:last-child { border-bottom: none; }
+
+    .activity-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(74,144,226,0.1);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+      font-size: 1.3rem;
+    }
+
+    .profile-info p {
+      margin: 0.9rem 0;
+      color: #555;
+    }
+
+    .profile-info strong {
+      color: var(--dark);
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover { background: var(--primary-dark); }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    @media (max-width: 992px) {
+      .dashboard-container { grid-template-columns: 1fr; }
+      .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+      }
+      .main-content { margin-left: 0; }
+      .content-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Loading / Auth states -->
-  <div id="loading-screen">
-    <h2>Loading your business dashboard...</h2>
-    <div style="font-size:1.8rem;">⋯</div>
-  </div>
+<div class="dashboard-container">
 
-  <div id="login-required" style="display:none">
-    <h1>Please Sign In</h1>
-    <p>You need to be logged in to access your business dashboard.</p>
-    <a href="/login.html" style="padding:0.8rem 1.8rem; background:var(--primary); color:white; border-radius:8px; text-decoration:none; margin-top:1rem; display:inline-block;">
-      Go to Login
-    </a>
-  </div>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>AllBusiness</h2>
+    </div>
+    <nav class="sidebar-menu">
+      <a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a>
+      <a href="#"><i class="fas fa-store"></i> My Business</a>
+      <a href="#"><i class="fas fa-chart-line"></i> Statistics</a>
+      <a href="#"><i class="fas fa-users"></i> Views & Contacts</a>
+      <a href="#"><i class="fas fa-edit"></i> Edit Profile</a>
+      <a href="#"><i class="fas fa-images"></i> Gallery</a>
+      <a href="#"><i class="fas fa-cog"></i> Settings</a>
+      <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
 
-  <!-- Main Dashboard -->
-  <div id="dashboard-content">
+  <!-- Main Content -->
+  <main class="main-content">
 
-    <header>
-      <div class="logo">AllBusiness</div>
+    <div class="topbar">
+      <div class="greeting">
+        <h1>Welcome back, <span id="businessNameDisplay">Coffee Haven</span></h1>
+        <p>Here's what's happening with your business today</p>
+      </div>
+      <button class="btn btn-primary">Update Business Info</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-eye"></i></div>
+        <div class="stat-number">2,847</div>
+        <div class="stat-label">Profile Views (30 days)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-phone"></i></div>
+        <div class="stat-number">124</div>
+        <div class="stat-label">Contact Clicks</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-star"></i></div>
+        <div class="stat-number">4.8</div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="stat-number">+18%</div>
+        <div class="stat-label">Growth this month</div>
+      </div>
+    </div>
+
+    <div class="content-grid">
+
+      <!-- Recent Activity -->
+      <div class="card">
+        <h3>Recent Activity</h3>
+        <div class="activity-item">
+          <div class="activity-icon"><i class="fas fa-eye"></i></div>
+          <div>
+            <strong>New profile view</strong><br>
+            <small>Someone viewed your business 12 min ago</small>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon"><i class="fas fa-phone"></i></div>
+          <div>
+            <strong>Contact click</strong><br>
+            <small>Email button clicked — 41 min ago</small>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon"><i class="fas fa-star"></i></div>
+          <div>
+            <strong>New 5-star review</strong><br>
+            <small>"Best cappuccino in Joburg!" – Thabo M.</small>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon"><i class="fas fa-share"></i></div>
+          <div>
+            <strong>Profile shared</strong><br>
+            <small>Shared via WhatsApp – 3 hours ago</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Business Info -->
       <div>
-        <button id="btn-logout" style="padding:0.6rem 1.3rem; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer;">
-          Sign Out
-        </button>
-      </div>
-    </header>
+        <div class="card">
+          <h3>Business Info</h3>
+          <div class="profile-info">
+            <p><strong>Category:</strong> Coffee Shop • Café</p>
+            <p><strong>Email:</strong> hello@coffeehaven.co.za</p>
+            <p><strong>Phone:</strong> +27 82 456 7890</p>
+            <p><strong>Location:</strong> Sandton, Johannesburg</p>
+            <p><strong>Member since:</strong> January 12, 2026</p>
+          </div>
+          <div style="margin-top:1.5rem;">
+            <button class="btn btn-outline">Edit Details</button>
+          </div>
+        </div>
 
-    <main>
-      <div class="welcome">
-        <h1>Welcome back, <span id="owner-name">Business Owner</span>!</h1>
-        <p id="business-name" style="font-size:1.3rem; color:#64748b; margin-top:0.3rem;">Your Business</p>
-      </div>
-
-      <div class="grid-stats">
-        <div class="stat-card">
-          <div class="label">Orders Today</div>
-          <div class="value">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Revenue This Month</div>
-          <div class="value">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Active Customers</div>
-          <div class="value">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Pending Tasks</div>
-          <div class="value">—</div>
+        <div class="card" style="margin-top:2rem;">
+          <h3>Quick Actions</h3>
+          <div style="display:grid; gap:1rem; margin-top:1.2rem;">
+            <button class="btn btn-primary">Add New Photo</button>
+            <button class="btn btn-primary" style="background:var(--secondary);">Create Promotion</button>
+            <button class="btn btn-outline">View Public Profile</button>
+          </div>
         </div>
       </div>
 
-      <!-- You can add more sections here: recent orders, charts, quick actions, etc -->
-    </main>
-  </div>
+    </div>
 
+  </main>
+</div>
+
+<script type="module">
+  // You would normally get this from auth.currentUser after login
+  // For demo purposes only:
+  document.getElementById('businessNameDisplay').textContent = "Coffee Haven";
+</script>
 </body>
 </html>
