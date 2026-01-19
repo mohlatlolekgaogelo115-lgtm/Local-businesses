@@ -16,16 +16,10 @@
       --dark: #2c3e50;
       --light: #ecf0f1;
       --gray: #7f8c8d;
-      --glass: rgba(255,255,255,0.78);
       --shadow: 0 8px 32px rgba(31,38,135,0.12);
     }
 
-    * {
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-    }
-
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
       background: #f5f7fa;
@@ -39,7 +33,6 @@
       min-height: 100vh;
     }
 
-    /* ── SIDEBAR ── */
     .sidebar {
       background: white;
       border-right: 1px solid #e8ecef;
@@ -62,10 +55,6 @@
       font-size: 1.9rem;
       font-weight: 800;
       letter-spacing: -1px;
-    }
-
-    .sidebar-menu {
-      padding: 1.5rem 0;
     }
 
     .sidebar-menu a {
@@ -92,16 +81,11 @@
       font-size: 1.3rem;
     }
 
-    .logout-btn {
-      margin-top: 3rem;
-      color: var(--danger) !important;
-    }
+    .logout-btn { margin-top: 3rem; color: var(--danger) !important; }
 
-    /* ── MAIN CONTENT ── */
     .main-content {
       margin-left: 260px;
       padding: 2.5rem 3rem;
-      background: #f8f9fc;
     }
 
     .topbar {
@@ -113,15 +97,8 @@
       gap: 1rem;
     }
 
-    .greeting h1 {
-      font-size: 2.1rem;
-      color: var(--dark);
-    }
-
-    .greeting p {
-      color: #666;
-      margin-top: 0.3rem;
-    }
+    .greeting h1 { font-size: 2.1rem; color: var(--dark); }
+    .greeting p { color: #666; margin-top: 0.3rem; }
 
     .stats-grid {
       display: grid;
@@ -138,34 +115,11 @@
       transition: transform 0.25s;
     }
 
-    .stat-card:hover {
-      transform: translateY(-6px);
-    }
+    .stat-card:hover { transform: translateY(-6px); }
 
-    .stat-icon {
-      font-size: 2.4rem;
-      color: var(--primary);
-      margin-bottom: 1rem;
-    }
-
-    .stat-number {
-      font-size: 2.4rem;
-      font-weight: 700;
-      margin: 0.4rem 0;
-      color: var(--dark);
-    }
-
-    .stat-label {
-      color: #666;
-      font-size: 1.05rem;
-    }
-
-    /* Recent Activity / Profile section */
-    .content-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 2rem;
-    }
+    .stat-icon { font-size: 2.4rem; color: var(--primary); margin-bottom: 1rem; }
+    .stat-number { font-size: 2.4rem; font-weight: 700; margin: 0.4rem 0; color: var(--dark); }
+    .stat-label { color: #666; font-size: 1.05rem; }
 
     .card {
       background: white;
@@ -179,9 +133,6 @@
       margin-bottom: 1.4rem;
       color: var(--dark);
       font-size: 1.45rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
     .activity-item {
@@ -204,14 +155,8 @@
       font-size: 1.3rem;
     }
 
-    .profile-info p {
-      margin: 0.9rem 0;
-      color: #555;
-    }
-
-    .profile-info strong {
-      color: var(--dark);
-    }
+    .profile-info p { margin: 0.9rem 0; color: #555; }
+    .profile-info strong { color: var(--dark); }
 
     .btn {
       padding: 0.75rem 1.5rem;
@@ -222,33 +167,15 @@
       transition: all 0.25s;
     }
 
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-
+    .btn-primary { background: var(--primary); color: white; }
     .btn-primary:hover { background: var(--primary-dark); }
-
-    .btn-outline {
-      background: transparent;
-      border: 2px solid var(--primary);
-      color: var(--primary);
-    }
-
-    .btn-outline:hover {
-      background: var(--primary);
-      color: white;
-    }
+    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: white; }
 
     @media (max-width: 992px) {
       .dashboard-container { grid-template-columns: 1fr; }
-      .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-      }
+      .sidebar { position: relative; width: 100%; height: auto; }
       .main-content { margin-left: 0; }
-      .content-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -256,7 +183,6 @@
 
 <div class="dashboard-container">
 
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <h2>AllBusiness</h2>
@@ -273,111 +199,133 @@
     </nav>
   </aside>
 
-  <!-- Main Content -->
   <main class="main-content">
-
     <div class="topbar">
       <div class="greeting">
-        <h1>Welcome back, <span id="businessNameDisplay">Coffee Haven</span></h1>
+        <h1>Welcome back, <span id="businessNameDisplay">Loading...</span></h1>
         <p>Here's what's happening with your business today</p>
       </div>
       <button class="btn btn-primary">Update Business Info</button>
     </div>
 
-    <!-- Stats -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-icon"><i class="fas fa-eye"></i></div>
-        <div class="stat-number">2,847</div>
+        <div class="stat-number" id="viewsCount">—</div>
         <div class="stat-label">Profile Views (30 days)</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon"><i class="fas fa-phone"></i></div>
-        <div class="stat-number">124</div>
+        <div class="stat-number" id="contactsCount">—</div>
         <div class="stat-label">Contact Clicks</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon"><i class="fas fa-star"></i></div>
-        <div class="stat-number">4.8</div>
+        <div class="stat-number" id="ratingDisplay">—</div>
         <div class="stat-label">Average Rating</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
-        <div class="stat-number">+18%</div>
+        <div class="stat-number" id="growthDisplay">—</div>
         <div class="stat-label">Growth this month</div>
       </div>
     </div>
 
-    <div class="content-grid">
-
-      <!-- Recent Activity -->
-      <div class="card">
-        <h3>Recent Activity</h3>
-        <div class="activity-item">
-          <div class="activity-icon"><i class="fas fa-eye"></i></div>
-          <div>
-            <strong>New profile view</strong><br>
-            <small>Someone viewed your business 12 min ago</small>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-icon"><i class="fas fa-phone"></i></div>
-          <div>
-            <strong>Contact click</strong><br>
-            <small>Email button clicked — 41 min ago</small>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-icon"><i class="fas fa-star"></i></div>
-          <div>
-            <strong>New 5-star review</strong><br>
-            <small>"Best cappuccino in Joburg!" – Thabo M.</small>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-icon"><i class="fas fa-share"></i></div>
-          <div>
-            <strong>Profile shared</strong><br>
-            <small>Shared via WhatsApp – 3 hours ago</small>
-          </div>
-        </div>
+    <div class="card">
+      <h3>Business Information</h3>
+      <div class="profile-info" id="businessInfo">
+        <p><strong>Category:</strong> <span id="categoryDisplay">—</span></p>
+        <p><strong>Email:</strong> <span id="emailDisplay">—</span></p>
+        <p><strong>Phone:</strong> <span id="phoneDisplay">—</span></p>
+        <p><strong>Location:</strong> <span id="locationDisplay">—</span></p>
+        <p><strong>Member since:</strong> <span id="memberSince">—</span></p>
       </div>
-
-      <!-- Quick Business Info -->
-      <div>
-        <div class="card">
-          <h3>Business Info</h3>
-          <div class="profile-info">
-            <p><strong>Category:</strong> Coffee Shop • Café</p>
-            <p><strong>Email:</strong> hello@coffeehaven.co.za</p>
-            <p><strong>Phone:</strong> +27 82 456 7890</p>
-            <p><strong>Location:</strong> Sandton, Johannesburg</p>
-            <p><strong>Member since:</strong> January 12, 2026</p>
-          </div>
-          <div style="margin-top:1.5rem;">
-            <button class="btn btn-outline">Edit Details</button>
-          </div>
-        </div>
-
-        <div class="card" style="margin-top:2rem;">
-          <h3>Quick Actions</h3>
-          <div style="display:grid; gap:1rem; margin-top:1.2rem;">
-            <button class="btn btn-primary">Add New Photo</button>
-            <button class="btn btn-primary" style="background:var(--secondary);">Create Promotion</button>
-            <button class="btn btn-outline">View Public Profile</button>
-          </div>
-        </div>
-      </div>
-
     </div>
 
+    <div class="card">
+      <h3>Recent Activity</h3>
+      <div id="activityList">
+        <!-- Will be filled dynamically -->
+        <p style="color:#999; text-align:center; padding:2rem;">Loading activity...</p>
+      </div>
+    </div>
   </main>
 </div>
 
+<!-- ================== Firebase Realtime Database SDK ================== -->
 <script type="module">
-  // You would normally get this from auth.currentUser after login
-  // For demo purposes only:
-  document.getElementById('businessNameDisplay').textContent = "Coffee Haven";
+  // Firebase 9+ modular syntax
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAojYRIH8FJL5B8yg1b3qxsc29vB3vLC-8",
+    authDomain: "allbusiness-596cc.firebaseapp.com",
+    databaseURL: "https://allbusiness-596cc-default-rtdb.firebaseio.com", // ← Important! Change if needed
+    projectId: "allbusiness-596cc",
+    storageBucket: "allbusiness-596cc.firebasestorage.app",
+    messagingSenderId: "665302840524",
+    appId: "1:665302840524:web:e9c1078e14bc0de6a87e69"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // Listen for auth state
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      // Not logged in → redirect or show message
+      document.body.innerHTML = `
+        <div style="padding:4rem; text-align:center; font-size:1.4rem; color:#555;">
+          <h1>Please log in first</h1>
+          <p>You will be redirected to login page...</p>
+        </div>
+      `;
+      setTimeout(() => {
+        window.location.href = "index.html"; // ← change to your login/main page
+      }, 2200);
+      return;
+    }
+
+    // User is logged in → load their business data
+    const uid = user.uid;
+    const businessRef = ref(db, `businesses/${uid}`);
+
+    onValue(businessRef, (snapshot) => {
+      if (!snapshot.exists()) {
+        document.getElementById('businessInfo').innerHTML = '<p style="color:#e74c3c;">Business profile not found. Please complete registration.</p>';
+        return;
+      }
+
+      const data = snapshot.val();
+
+      // Basic info
+      document.getElementById('businessNameDisplay').textContent = data.name || "Your Business";
+      document.getElementById('categoryDisplay').textContent = data.category || "—";
+      document.getElementById('emailDisplay').textContent = data.email || "—";
+      document.getElementById('phoneDisplay').textContent = data.phone || "—";
+      document.getElementById('locationDisplay').textContent = data.location || "—";
+
+      // Member since
+      if (data.createdAt) {
+        const date = new Date(data.createdAt);
+        document.getElementById('memberSince').textContent = 
+          date.toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+
+      // Stats
+      const stats = data.stats || {};
+      document.getElementById('viewsCount').textContent = stats.profileViews ?? "0";
+      document.getElementById('contactsCount').textContent = stats.contactClicks ?? "0";
+      document.getElementById('ratingDisplay').textContent = stats.averageRating?.toFixed(1) ?? "—";
+      document.getElementById('growthDisplay').textContent = 
+        stats.growthThisMonth != null ? `+${stats.growthThisMonth}%` : "—";
+    }, {
+      onlyOnce: false // real-time updates
+    });
+  });
 </script>
 </body>
 </html>
