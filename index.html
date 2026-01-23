@@ -1,608 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Vynix Biz • Dashboard</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded" rel="stylesheet"/>
-
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
-  <style>
-    :root {
-      --bg-body: #F0F4F9;
-      --bg-sidebar: #F0F4F9;
-      --primary-gradient: linear-gradient(135deg, #4285F4, #D96570);
-      --text-main: #1F1F1F;
-      --text-secondary: #444746;
-      --text-muted: #8E918F;
-      --accent-color: #4285F4;
-      --danger-color: #DB4437;
-      --sidebar-width: 260px;
-      --sidebar-collapsed: 72px;
-      --header-height: 70px;
-    }
-
-    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-
-    body {
-      background: var(--bg-body);
-      color: var(--text-main);
-      font-family: 'Outfit', sans-serif;
-      height: 100vh;
-      display: flex;
-      overflow: hidden;
-    }
-
-    /* ─── Sidebar ─── */
-    .sidebar {
-      background: var(--bg-sidebar);
-      width: var(--sidebar-collapsed);
-      display: flex;
-      flex-direction: column;
-      padding: 12px;
-      z-index: 50;
-      transition: width 0.3s cubic-bezier(0.2, 0, 0, 1);
-    }
-    @media(min-width: 769px) {
-      .sidebar:hover { width: var(--sidebar-width); }
-      .sidebar:not(:hover) .nav-label, .sidebar:not(:hover) .brand-text { opacity: 0; display: none; }
-      .mobile-menu-trigger { display: none !important; }
-    }
-    @media(max-width: 768px) {
-      .sidebar {
-        position: fixed; left: 0; top: 0; bottom: 0;
-        width: 280px; background: #fff;
-        transform: translateX(-100%);
-        box-shadow: 4px 0 24px rgba(0,0,0,0.15);
-      }
-      .sidebar.open { transform: translateX(0); }
-    }
-
-    .nav-list { flex: 1; display: flex; flex-direction: column; gap: 4px; margin-top: 20px; }
-    .nav-item {
-      display: flex; align-items: center; gap: 16px; padding: 12px 16px; border-radius: 24px;
-      color: var(--text-secondary); cursor: pointer; text-decoration: none; white-space: nowrap;
-      transition: background 0.2s;
-    }
-    .nav-item:hover { background: rgba(0,0,0,0.05); color: var(--text-main); }
-    .nav-item.active { background: #D3E3FD; color: #041E49; font-weight: 500; }
-    .nav-icon { font-size: 24px; }
-
-    /* ─── Main Content ─── */
-    .main {
-      flex: 1; display: flex; flex-direction: column; position: relative;
-      background: #FFFFFF; border-radius: 24px; margin: 16px 16px 16px 0;
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.02); overflow: hidden;
-    }
-    @media(max-width: 768px) { .main { margin: 0; border-radius: 0; } }
-
-    .top-bar {
-      height: var(--header-height); display: flex; align-items: center; justify-content: space-between;
-      padding: 0 24px; border-bottom: 1px solid #f0f0f0; z-index: 10; background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(10px); position: absolute; top: 0; width: 100%;
-    }
-
-    .user-pill {
-      display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 12px;
-      background: #F0F4F9; border-radius: 32px; cursor: pointer; transition: background 0.2s;
-    }
-    .user-avatar { width: 32px; height: 32px; border-radius: 50%; background-size: cover; background-position: center; }
-
-    .content-scroll { flex: 1; overflow-y: auto; padding-top: var(--header-height); scroll-behavior: smooth; }
-
-    /* Views */
-    .view-section { display: none; animation: fadeIn 0.3s ease; }
-    .view-section.active-view { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Directory Styles */
-    .hero-section { padding: 60px 24px 40px; text-align: center; }
-    .hero-title {
-      font-size: 2.5rem; font-weight: 700; margin-bottom: 12px;
-      background: var(--primary-gradient); -webkit-background-clip: text; color: transparent;
-    }
-    .search-wrapper { max-width: 600px; margin: 24px auto 0; position: relative; }
-    .search-input {
-      width: 100%; padding: 16px 24px 16px 50px; border-radius: 30px; border: 1px solid #e0e0e0;
-      font-size: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); outline: none; transition: 0.2s;
-    }
-    .search-input:focus { border-color: var(--accent-color); box-shadow: 0 4px 16px rgba(66, 133, 244, 0.15); }
-    .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-
-    .filter-bar { display: flex; gap: 10px; overflow-x: auto; padding: 0 24px 20px; justify-content: center; scrollbar-width: none; }
-    .filter-bar::-webkit-scrollbar { display: none; }
-    .category-pill {
-      padding: 8px 16px; border-radius: 20px; border: 1px solid #e0e0e0;
-      font-size: 0.9rem; font-weight: 500; cursor: pointer; white-space: nowrap; transition: 0.2s;
-    }
-    .category-pill.active { background: var(--text-main); color: white; border-color: var(--text-main); }
-
-    .business-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 24px; padding: 24px; max-width: 1200px; margin: 0 auto;
-    }
-    .business-card {
-      background: white; border: 1px solid #f0f0f0; border-radius: 16px;
-      overflow: hidden; transition: 0.2s; cursor: pointer; display: flex; flex-direction: column;
-    }
-    .business-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
-    .card-img { height: 140px; background-color: #f0f0f0; position: relative; background-size: cover; background-position: center; }
-    .card-category {
-      position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.9);
-      padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;
-    }
-    .card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; }
-    .biz-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
-    .biz-rating { display: flex; align-items: center; gap: 4px; font-size: 0.9rem; color: #F4B400; margin-bottom: 12px; }
-    .biz-info { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 6px; }
-    .card-footer { margin-top: auto; padding-top: 16px; display: flex; gap: 8px; }
-    .action-btn {
-      flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #e0e0e0;
-      background: transparent; font-weight: 500; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
-    }
-    .action-btn:hover { background: #f8f9fa; }
-    .action-btn.primary { background: var(--text-main); color: white; border: none; }
-    .action-btn.primary:hover { opacity: 0.9; }
-
-    /* ─── Dashboard Specific Styles ─── */
-    .dash-header { padding: 40px 24px 20px; max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-    .dash-table-wrapper { padding: 0 24px; max-width: 1000px; margin: 0 auto; overflow-x: auto; }
-    .dash-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-    .dash-table th { text-align: left; padding: 12px; color: var(--text-muted); font-weight: 500; font-size: 0.85rem; border-bottom: 1px solid #eee; }
-    .dash-table td { padding: 16px 12px; border-bottom: 1px solid #f9f9f9; vertical-align: middle; }
-    .dash-thumb { width: 48px; height: 48px; border-radius: 8px; background-size: cover; background-position: center; background-color: #eee; }
-    .status-badge { background: #E6F4EA; color: #137333; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
-    .btn-icon { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; border-radius: 50%; }
-    .btn-icon:hover { background: #f0f0f0; color: var(--danger-color); }
-    
-    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
-    .fab-add {
-      background: var(--accent-color); color: white; border: none; padding: 12px 20px;
-      border-radius: 30px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;
-      box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3); transition: 0.2s;
-    }
-    .fab-add:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(66, 133, 244, 0.4); }
-
-    /* ─── Modals ─── */
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 40; opacity: 0; pointer-events: none; transition: 0.3s; }
-    .overlay.active { opacity: 1; pointer-events: auto; }
-    
-    .modal-sheet {
-      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
-      background: white; width: 90%; max-width: 500px; border-radius: 24px;
-      z-index: 100; opacity: 0; pointer-events: none; transition: 0.3s;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.2); overflow: hidden;
-    }
-    .modal-sheet.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
-    
-    .modal-img-header { height: 180px; background-size: cover; position: relative; }
-    .modal-close {
-      position: absolute; top: 16px; right: 16px; background: white; border: none;
-      width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 2;
-    }
-    .modal-content { padding: 24px; }
-
-    /* Form Styles */
-    .form-group { margin-bottom: 16px; }
-    .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary); }
-    .form-input, .form-select {
-      width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e0e0e0;
-      font-family: inherit; font-size: 0.95rem; outline: none; transition: 0.2s;
-    }
-    .form-input:focus, .form-select:focus { border-color: var(--accent-color); }
-    .btn-block { width: 100%; padding: 14px; background: var(--text-main); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexGen Auto-Diag</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-slate-900 text-white font-sans">
 
-  <div class="overlay" id="overlay" onclick="closeAll()"></div>
+    <div class="max-w-4xl mx-auto p-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-blue-400">NexGen AI Diagnostics</h1>
+            <p class="text-slate-400">Improved Real-Time Vehicle Analysis</p>
+        </header>
 
-  <aside class="sidebar" id="sidebar">
-    <div style="padding: 10px 10px 20px;">
-        <h2 style="font-size: 1.2rem; font-weight: 700; display:flex; align-items:center; gap:10px;">
-           <span class="material-symbols-rounded" style="color: #4285F4;">business_center</span>
-           <span class="brand-text">Vynix Biz</span>
-        </h2>
-    </div>
-    <div class="nav-list">
-      <div class="nav-item active" onclick="switchView('directory', this)">
-        <span class="material-symbols-rounded nav-icon">storefront</span>
-        <span class="nav-label">Directory</span>
-      </div>
-      <div class="nav-item" onclick="switchView('dashboard', this)">
-        <span class="material-symbols-rounded nav-icon">dashboard</span>
-        <span class="nav-label">Dashboard</span>
-      </div>
-    </div>
-    <div style="margin-top: auto;">
-      <div class="nav-item" id="authBtnSidebar" onclick="handleAuth()">
-        <span class="material-symbols-rounded nav-icon">login</span>
-        <span class="nav-label">Sign In</span>
-      </div>
-    </div>
-  </aside>
-
-  <main class="main">
-    <div class="top-bar">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <button class="mobile-menu-trigger" onclick="toggleSidebar()" style="background:none; border:none; padding:8px;"><span class="material-symbols-rounded">menu</span></button>
-        <span id="greetingName" style="font-weight:600; color:var(--text-secondary)">Hello, Guest</span>
-      </div>
-      <div class="user-pill" onclick="handleAuth()">
-        <div class="user-avatar" id="userAvatar" style="background-image: url('https://ui-avatars.com/api/?name=Guest')"></div>
-      </div>
-    </div>
-
-    <div class="content-scroll">
-      
-      <div id="view-directory" class="view-section active-view">
-        <div class="hero-section">
-          <h1 class="hero-title">Find Local Businesses</h1>
-          <p style="color:var(--text-secondary);">Live data powered by Vynix Cloud.</p>
-          <div class="search-wrapper">
-            <span class="material-symbols-rounded search-icon">search</span>
-            <input type="text" class="search-input" id="searchInput" placeholder="Search businesses..." autocomplete="off">
-          </div>
-        </div>
-
-        <div class="filter-bar" id="categoryContainer">
-          <div class="category-pill active" onclick="filterCategory('All', this)">All</div>
-          <div class="category-pill" onclick="filterCategory('Restaurant', this)">Restaurant</div>
-          <div class="category-pill" onclick="filterCategory('Retail', this)">Retail</div>
-          <div class="category-pill" onclick="filterCategory('Service', this)">Service</div>
-          <div class="category-pill" onclick="filterCategory('Tech', this)">Tech</div>
-        </div>
-
-        <div class="business-grid" id="businessGrid">
-          </div>
-      </div>
-
-      <div id="view-dashboard" class="view-section">
-        <div class="dash-header">
-            <div>
-                <h1 style="font-size:1.8rem; font-weight:700;">My Businesses</h1>
-                <p style="color:var(--text-secondary); margin-top:4px;">Manage your active listings</p>
-            </div>
-            <button class="fab-add" onclick="openAddModal()">
-                <span class="material-symbols-rounded">add</span> New
-            </button>
-        </div>
-
-        <div class="dash-table-wrapper">
-            <div id="dashboardContent">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
+                <h2 class="text-xl mb-4 font-semibold">Vehicle Input</h2>
+                <div class="space-y-4">
+                    <input id="vin" type="text" placeholder="Enter VIN (Optional)" class="w-full p-3 rounded bg-slate-700 border-none">
+                    <input id="mileage" type="number" placeholder="Mileage" class="w-full p-3 rounded bg-slate-700 border-none">
+                    
+                    <label class="block text-sm text-slate-400">Select Symptoms:</label>
+                    <select id="symptoms" class="w-full p-3 rounded bg-slate-700 border-none" multiple>
+                        <option value="squealing">Squealing Noise</option>
+                        <option value="shaking_steering">Shaking Steering Wheel</option>
+                        <option value="sweet_smell">Sweet/Sugary Smell</option>
+                    </select>
+                    
+                    <button onclick="runDiagnosis()" class="w-full bg-blue-600 hover:bg-blue-500 p-3 rounded font-bold transition">Analyze Vehicle</button>
                 </div>
-        </div>
-      </div>
-
-    </div>
-  </main>
-
-  <div class="modal-sheet" id="detailModal">
-    <div class="modal-img-header" id="modalImg">
-        <button class="modal-close" onclick="closeAll()"><span class="material-symbols-rounded">close</span></button>
-        <span class="card-category" id="modalCat" style="top:auto; bottom:12px; left:12px;">Category</span>
-    </div>
-    <div class="modal-content">
-        <h2 id="modalTitle" style="font-weight:700; margin-bottom:8px;">Business Name</h2>
-        <div class="biz-rating" style="margin-bottom:20px;">
-            <span class="material-symbols-rounded" style="font-size:20px;">star</span>
-            <strong id="modalRating" style="color:#1f1f1f;">0.0</strong> <span id="modalReviews">(0 reviews)</span>
-        </div>
-        <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:24px;">
-            <div class="biz-info"><span class="material-symbols-rounded">location_on</span> <span id="modalAddress">Address</span></div>
-            <div class="biz-info"><span class="material-symbols-rounded">call</span> <span id="modalPhone">Phone</span></div>
-        </div>
-        <button class="action-btn primary" style="width:100%; padding:14px;">Contact Now</button>
-    </div>
-  </div>
-
-  <div class="modal-sheet" id="addModal" style="max-width:400px;">
-    <div style="padding:20px 24px 0; display:flex; justify-content:space-between; align-items:center;">
-        <h3 style="font-weight:700; font-size:1.2rem;">List New Business</h3>
-        <button onclick="closeAll()" style="background:none; border:none; cursor:pointer;"><span class="material-symbols-rounded">close</span></button>
-    </div>
-    <div class="modal-content">
-        <form id="addBusinessForm" onsubmit="submitNewBusiness(event)">
-            <div class="form-group">
-                <label class="form-label">Business Name</label>
-                <input type="text" class="form-input" id="inpName" required placeholder="e.g. Joe's Diner">
             </div>
-            <div class="form-group">
-                <label class="form-label">Category</label>
-                <select class="form-select" id="inpCat">
-                    <option value="Restaurant">Restaurant</option>
-                    <option value="Retail">Retail</option>
-                    <option value="Service">Service</option>
-                    <option value="Tech">Tech</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Address</label>
-                <input type="text" class="form-input" id="inpAddress" required placeholder="123 Market St">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Phone</label>
-                <input type="tel" class="form-input" id="inpPhone" required placeholder="(555) 123-4567">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Image URL</label>
-                <input type="url" class="form-input" id="inpImg" placeholder="https://..." value="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80">
-            </div>
-            <button type="submit" class="btn-block">Publish Listing</button>
-        </form>
-    </div>
-  </div>
 
-  <script>
-    // ─── 1. Firebase Configuration ───
-    const firebaseConfig = {
-      apiKey: "AIzaSyAojYRIH8FJL5B8yg1b3qxsc29vB3vLC-8",
-      authDomain: "allbusiness-596cc.firebaseapp.com",
-      projectId: "allbusiness-596cc",
-      storageBucket: "allbusiness-596cc.firebasestorage.app",
-      messagingSenderId: "665302840524",
-      appId: "1:665302840524:web:e9c1078e14bc0de6a87e69",
-      measurementId: "G-EMZFX7CE8V"
-    };
-
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    const auth = firebase.auth();
-    const db = firebase.database();
-    const provider = new firebase.auth.GoogleAuthProvider();
-
-    // ─── 2. State & Elements ───
-    let allBusinesses = [];
-    let currentCategory = 'All';
-    let currentUser = null;
-
-    const els = {
-      grid: document.getElementById('businessGrid'),
-      dashContent: document.getElementById('dashboardContent'),
-      search: document.getElementById('searchInput'),
-      sidebar: document.getElementById('sidebar'),
-      overlay: document.getElementById('overlay'),
-      modalDetail: document.getElementById('detailModal'),
-      modalAdd: document.getElementById('addModal'),
-      greeting: document.getElementById('greetingName'),
-      avatar: document.getElementById('userAvatar')
-    };
-
-    // ─── 3. Database Functions ───
-    function initDatabaseListener() {
-        const bizRef = db.ref('businesses');
-        bizRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                allBusinesses = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-            } else {
-                allBusinesses = [];
-            }
-            filterBusinesses(); // Update Directory
-            if(currentUser) renderDashboard(); // Update Dashboard if logged in
-        });
-    }
-
-    // ─── 4. Directory Logic ───
-    function filterBusinesses() {
-        const query = els.search.value.toLowerCase();
-        const filtered = allBusinesses.filter(biz => {
-            const matchesSearch = biz.name.toLowerCase().includes(query) || biz.cat.toLowerCase().includes(query);
-            const matchesCat = currentCategory === 'All' || biz.cat === currentCategory;
-            return matchesSearch && matchesCat;
-        });
-        renderCards(filtered);
-    }
-
-    function renderCards(data) {
-        els.grid.innerHTML = data.length === 0 ? '<p style="grid-column: 1/-1; text-align:center; padding: 40px; color: #888;">No businesses found.</p>' : '';
-        data.forEach(biz => {
-            const card = document.createElement('div');
-            card.className = 'business-card';
-            card.onclick = () => openDetailModal(biz);
-            card.innerHTML = `
-                <div class="card-img" style="background-image: url('${biz.img || 'https://via.placeholder.com/300'}')">
-                    <span class="card-category">${biz.cat}</span>
-                </div>
-                <div class="card-body">
-                    <div class="biz-name">${biz.name}</div>
-                    <div class="biz-rating"><span class="material-symbols-rounded" style="font-size:16px;">star</span>${biz.rating || 'New'} <span>(${biz.reviews || 0})</span></div>
-                    <div class="biz-info"><span class="material-symbols-rounded" style="font-size:16px">location_on</span>${biz.address}</div>
-                    <div class="card-footer">
-                        <button class="action-btn">Map</button>
-                        <button class="action-btn primary">Call</button>
+            <div id="result-box" class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 hidden">
+                <h2 class="text-xl mb-4 font-semibold text-green-400">AI Analysis</h2>
+                <div id="analysis-output" class="text-slate-300 space-y-3">
                     </div>
-                </div>`;
-            els.grid.appendChild(card);
-        });
-    }
+            </div>
+        </div>
+    </div>
 
-    // ─── 5. Dashboard Logic ───
-    function renderDashboard() {
-        if (!currentUser) return;
+    <script>
+        async function runDiagnosis() {
+            const vin = document.getElementById('vin').value;
+            const mileage = document.getElementById('mileage').value;
+            const symptoms = Array.from(document.getElementById('symptoms').selectedOptions).map(o => o.value);
 
-        // Filter businesses created by this user
-        const myBiz = allBusinesses.filter(b => b.ownerId === currentUser.uid);
+            // Mocking the API call to the Python Backend
+            const resultBox = document.getElementById('result-box');
+            const output = document.getElementById('analysis-output');
+            
+            resultBox.classList.remove('hidden');
+            output.innerHTML = "<em>Analyzing sensor data...</em>";
 
-        if (myBiz.length === 0) {
-            els.dashContent.innerHTML = `
-                <div class="empty-state">
-                    <span class="material-symbols-rounded" style="font-size:48px; color:#ddd; margin-bottom:16px;">store</span>
-                    <h3>No listings yet</h3>
-                    <p>Add your business to get started.</p>
-                </div>`;
-            return;
+            // Simulate Network Delay
+            setTimeout(() => {
+                output.innerHTML = `
+                    <div class="p-3 bg-red-900/30 border border-red-500 rounded">
+                        <strong>Possible Issue:</strong> ${symptoms.includes('squealing') ? 'Serpentine Belt Wear' : 'Fluid Leak'}
+                        <p class="text-sm mt-1">AI Confidence: 94%</p>
+                    </div>
+                    <p class="mt-4 text-sm text-slate-400">Recommended Action: Check belt tension or inspect radiator hoses.</p>
+                `;
+            }, 1500);
         }
-
-        let html = `
-            <table class="dash-table">
-                <thead>
-                    <tr>
-                        <th width="60">Image</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Status</th>
-                        <th style="text-align:right;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-
-        myBiz.forEach(biz => {
-            html += `
-                <tr>
-                    <td><div class="dash-thumb" style="background-image:url('${biz.img}')"></div></td>
-                    <td><strong>${biz.name}</strong><br><span style="font-size:0.8rem; color:#888;">${biz.address}</span></td>
-                    <td>${biz.cat}</td>
-                    <td><span class="status-badge">Live</span></td>
-                    <td style="text-align:right;">
-                        <button class="btn-icon" onclick="deleteBusiness('${biz.id}')" title="Delete">
-                            <span class="material-symbols-rounded">delete</span>
-                        </button>
-                    </td>
-                </tr>`;
-        });
-        
-        html += `</tbody></table>`;
-        els.dashContent.innerHTML = html;
-    }
-
-    function submitNewBusiness(e) {
-        e.preventDefault();
-        if(!currentUser) return alert("Please sign in first");
-
-        const newBiz = {
-            name: document.getElementById('inpName').value,
-            cat: document.getElementById('inpCat').value,
-            address: document.getElementById('inpAddress').value,
-            phone: document.getElementById('inpPhone').value,
-            img: document.getElementById('inpImg').value,
-            rating: 5.0,
-            reviews: 0,
-            ownerId: currentUser.uid, // Vital for permissions
-            createdAt: firebase.database.ServerValue.TIMESTAMP
-        };
-
-        db.ref('businesses').push(newBiz)
-          .then(() => {
-              closeAll();
-              document.getElementById('addBusinessForm').reset();
-              alert('Business Listed Successfully!');
-          })
-          .catch(err => alert(err.message));
-    }
-
-    function deleteBusiness(id) {
-        if(confirm("Are you sure you want to delete this listing?")) {
-            db.ref('businesses/' + id).remove();
-        }
-    }
-
-    // ─── 6. View & UI Functions ───
-    function switchView(viewName, navEl) {
-        if(viewName === 'dashboard' && !currentUser) {
-            alert("Please sign in to manage businesses.");
-            handleAuth();
-            return;
-        }
-
-        // Handle Nav State
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        if(navEl) navEl.classList.add('active');
-
-        // Handle View Visibility
-        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
-        document.getElementById(`view-${viewName}`).classList.add('active-view');
-
-        // Close mobile sidebar
-        els.sidebar.classList.remove('open');
-        els.overlay.classList.remove('active');
-        
-        if(viewName === 'dashboard') renderDashboard();
-    }
-
-    function openDetailModal(biz) {
-        document.getElementById('modalTitle').innerText = biz.name;
-        document.getElementById('modalCat').innerText = biz.cat;
-        document.getElementById('modalRating').innerText = biz.rating;
-        document.getElementById('modalReviews').innerText = `(${biz.reviews} reviews)`;
-        document.getElementById('modalAddress').innerText = biz.address;
-        document.getElementById('modalPhone').innerText = biz.phone;
-        document.getElementById('modalImg').style.backgroundImage = `url('${biz.img}')`;
-        els.modalDetail.classList.add('active');
-        els.overlay.classList.add('active');
-    }
-
-    function openAddModal() {
-        els.modalAdd.classList.add('active');
-        els.overlay.classList.add('active');
-    }
-
-    function closeAll() {
-        els.sidebar.classList.remove('open');
-        els.modalDetail.classList.remove('active');
-        els.modalAdd.classList.remove('active');
-        els.overlay.classList.remove('active');
-    }
-
-    function filterCategory(cat, btn) {
-        currentCategory = cat;
-        document.querySelectorAll('.category-pill').forEach(el => el.classList.remove('active'));
-        btn.classList.add('active');
-        filterBusinesses();
-        // Force switch to directory view
-        switchView('directory', document.querySelector('.nav-list .nav-item:first-child'));
-    }
-
-    els.search.addEventListener('input', () => {
-        filterBusinesses();
-        switchView('directory', document.querySelector('.nav-list .nav-item:first-child'));
-    });
-
-    function toggleSidebar() {
-        els.sidebar.classList.add('open');
-        els.overlay.classList.add('active');
-    }
-
-    // ─── 7. Auth Logic ───
-    function handleAuth() {
-        if(auth.currentUser) {
-            auth.signOut().then(() => {
-                location.reload();
-            });
-        } else {
-            auth.signInWithPopup(provider).catch(e => alert(e.message));
-        }
-    }
-
-    auth.onAuthStateChanged(user => {
-        currentUser = user;
-        if (user) {
-            els.greeting.innerText = `Hello, ${user.displayName.split(' ')[0]}`;
-            els.avatar.style.backgroundImage = `url(${user.photoURL})`;
-            document.getElementById('authBtnSidebar').querySelector('.nav-label').innerText = "Sign Out";
-            document.getElementById('authBtnSidebar').querySelector('.nav-icon').innerText = "logout";
-            renderDashboard();
-        } else {
-            els.greeting.innerText = "Hello, Guest";
-            els.avatar.style.backgroundImage = `url('https://ui-avatars.com/api/?name=Guest&background=random')`;
-            document.getElementById('authBtnSidebar').querySelector('.nav-label').innerText = "Sign In";
-            document.getElementById('authBtnSidebar').querySelector('.nav-icon').innerText = "login";
-            // If on dashboard, kick back to directory
-            switchView('directory', document.querySelector('.nav-list .nav-item:first-child'));
-        }
-    });
-
-    initDatabaseListener();
-
-  </script>
+    </script>
 </body>
 </html>
