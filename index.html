@@ -15,7 +15,7 @@
             scroll-behavior: smooth;
         }
         h1, h2, h3 { font-family: 'Playfair Display', serif; color: #000; }
-     
+        
         /* Navigation */
         nav {
             position: fixed;
@@ -30,248 +30,75 @@
             align-items: center;
             transition: all 0.4s ease;
         }
-        nav .logo {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: #000;
-        }
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 40px;
-        }
-        nav a {
-            color: #000;
-            text-decoration: none;
-            font-weight: 600;
-            position: relative;
-            transition: color 0.4s;
-        }
+        nav .logo { font-size: 2rem; font-weight: 700; letter-spacing: 2px; color: #000; }
+        nav ul { list-style: none; display: flex; gap: 40px; }
+        nav a { color: #000; text-decoration: none; font-weight: 600; position: relative; transition: color 0.4s; }
         nav a:hover { color: #c00; }
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #c00;
-            transition: width 0.4s ease;
-        }
+        nav a::after { content: ''; position: absolute; bottom: -8px; left: 0; width: 0; height: 2px; background: #c00; transition: width 0.4s ease; }
         nav a:hover::after { width: 100%; }
-     
+        
         /* Hero */
         #hero {
             height: 100vh;
             background: url('https://images.pexels.com/photos/14624139/pexels-photo-14624139.jpeg') center/cover no-repeat fixed;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative;
         }
-        #hero::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.5);
-        }
-        #hero h1 {
-            font-size: 6rem;
-            margin-bottom: 20px;
-            z-index: 1;
-            opacity: 0;
-            color: #000;
-            animation: fadeInDown 1.5s ease-out forwards;
-        }
-        #hero p {
-            font-size: 1.8rem;
-            margin-bottom: 40px;
-            z-index: 1;
-            opacity: 0;
-            color: #000;
-            animation: fadeInDown 1.5s ease-out 0.5s forwards;
-        }
+        #hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.5); }
+        #hero h1 { font-size: 6rem; margin-bottom: 20px; z-index: 1; opacity: 0; animation: fadeInDown 1.5s ease-out forwards; }
+        #hero p { font-size: 1.8rem; margin-bottom: 40px; z-index: 1; opacity: 0; animation: fadeInDown 1.5s ease-out 0.5s forwards; }
+        
         .cta {
-            z-index: 1;
-            padding: 15px 40px;
-            background: #c00;
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
-            border-radius: 50px;
-            transition: all 0.4s;
-            opacity: 0;
-            animation: fadeInDown 1.5s ease-out 1s forwards, pulse 3s infinite ease-in-out 2s;
-            border: none;
-            cursor: pointer;
+            z-index: 1; padding: 15px 40px; background: #c00; color: #fff; text-decoration: none; font-weight: 600; border-radius: 50px;
+            transition: all 0.4s; opacity: 0; animation: fadeInDown 1.5s ease-out 1s forwards, pulse 3s infinite ease-in-out 2s;
+            cursor: pointer; border: none; font-family: 'Inter', sans-serif;
         }
-        .cta:hover {
-            background: #a00;
-            transform: scale(1.1);
-        }
-     
+        .cta:hover { background: #a00; transform: scale(1.1); }
+        
         /* Sections */
         section { padding: 120px 50px; }
-        .section-title {
-            text-align: center;
-            font-size: 4rem;
-            margin-bottom: 80px;
-        }
-     
+        .section-title { text-align: center; font-size: 4rem; margin-bottom: 80px; }
+        
         /* Models Gallery */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 40px;
-            max宽度: 1400px;
-            margin: 0 auto;
-        }
-        .card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: transform 0.6s ease, box-shadow 0.6s ease;
-        }
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        .card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s ease;
-        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 40px; max-width: 1400px; margin: 0 auto; }
+        .card { position: relative; overflow: hidden; border-radius: 12px; cursor: pointer; transition: transform 0.6s ease; }
+        .card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
         .card:hover img { transform: scale(1.15); }
-        .overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 40px;
-            background: linear-gradient(transparent, rgba(255,255,255,0.95));
-        }
-        .overlay h3 { font-size: 2.5rem; margin-bottom: 10px; color: #000; }
-        .overlay p { font-size: 1.2rem; color: #111; }
+        .overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px; background: linear-gradient(transparent, rgba(255,255,255,0.95)); }
         .price { font-weight: 700; color: #c00; margin-top: 10px; }
-     
-        /* Performance Split */
-        .split {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 80px;
-            max-width: 1400px;
-            margin: 0 auto;
-            align-items: center;
-        }
-        .split img {
-            width: 100%;
-            border-radius: 12px;
-        }
-        .text-content h2 { font-size: 3.5rem; margin-bottom: 30px; }
-        .text-content p { font-size: 1.3rem; line-height: 1.8; color: #333; }
-     
-        /* Full Bleed Sections */
-        .full-bleed {
-            height: 80vh;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-        }
-        .full-bleed::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.3);
-        }
-        .full-bleed h2 {
-            font-size: 5rem;
-            z-index: 1;
-            color: #000;
-        }
-     
-        /* Footer & Form */
-        footer {
-            padding: 100px 50px;
-            background: #fff;
-            text-align: center;
-        }
-        #contact form {
-            max-width: 700px;
-            margin: 50px auto 0;
-        }
-        .form-group {
-            margin-bottom: 25px;
-            text-align: left;
-        }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 16px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            background: #fff;
-            transition: border 0.3s;
-        }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            outline: none;
-            border-color: #c00;
-        }
-        .form-group textarea { min-height: 150px; resize: vertical; }
-     
+        
         /* Modal Styles */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
+        #inquiryModal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
         }
-        .modal-overlay.show { display: flex; }
         .modal-content {
-            background: #fff;
-            padding: 50px;
-            border-radius: 16px;
-            max-width: 550px;
-            width: 90%;
-            text-align: center;
-            animation: zoomIn 0.5s ease-out;
+            background-color: #fff; margin: 5% auto; padding: 40px; border-radius: 20px;
+            width: 80%; max-width: 700px; position: relative; animation: fadeInUp 0.5s ease;
         }
-        .modal-detail-box {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: left;
-            border-left: 4px solid #c00;
-        }
+        .close-btn { position: absolute; right: 25px; top: 20px; font-size: 30px; cursor: pointer; }
+        .modal-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .contact-info { margin-top: 30px; padding-top: 20px; border-top: 2px solid #000; text-align: left; }
+
+        /* Performance Split */
+        .split { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1400px; margin: 0 auto; align-items: center; }
+        .split img { width: 100%; border-radius: 12px; }
+        .text-content p { font-size: 1.3rem; line-height: 1.8; color: #333; }
+
+        /* Full Bleed */
+        .full-bleed { height: 80vh; background-size: cover; background-position: center; background-attachment: fixed; display: flex; align-items: center; justify-content: center; position: relative; }
+        .full-bleed::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.4); }
+        .full-bleed h2 { font-size: 5rem; z-index: 1; }
+
+        footer { padding: 100px 50px; background: #fff; text-align: center; }
+
         /* Keyframes */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-60px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        @keyframes zoomIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-60px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
     </style>
 </head>
 <body>
+
     <nav>
         <div class="logo">APEX SA</div>
         <ul>
@@ -282,171 +109,114 @@
             <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
+
     <section id="hero">
         <h1>Engineered for the Extraordinary</h1>
         <p>Proudly South African Performance & Design</p>
         <a href="#models" class="cta">Explore the Collection</a>
     </section>
+
     <section id="models">
         <h2 class="section-title">The South African Collection</h2>
-        <div class="grid" id="modelsGrid">
-            <p style="text-align: center; grid-column: 1 / -1;">Loading models...</p>
+        <div class="grid">
+            <div class="card">
+                <img src="https://images.pexels.com/photos/8664307/pexels-photo-8664307.jpeg" alt="Apex Vortex">
+                <div class="overlay">
+                    <h3>Apex Vortex</h3>
+                    <p>0-100 km/h in 3.0s • 800 HP</p>
+                    <p class="price">From R5,950,000</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.pexels.com/photos/31078732/pexels-photo-31078732/free-photo-of-red-sports-car-on-scenic-mountain-road.jpeg" alt="Apex Inferno">
+                <div class="overlay">
+                    <h3>Apex Inferno</h3>
+                    <p>0-100 km/h in 2.8s • Track-focused</p>
+                    <p class="price">From R6,950,000</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.pexels.com/photos/29115172/pexels-photo-29115172.jpeg" alt="Apex Phantom">
+                <div class="overlay">
+                    <h3>Apex Phantom</h3>
+                    <p>Grand touring • Unmatched elegance</p>
+                    <p class="price">From R8,500,000</p>
+                </div>
+            </div>
         </div>
     </section>
+
     <section id="performance">
         <h2 class="section-title">Uncompromising South African Performance</h2>
         <div class="split">
             <div class="text-content">
                 <h2>Power Without Compromise</h2>
-                <p>Hand-crafted engineering delivers explosive acceleration and breathtaking top speed. Every component is designed for ultimate performance and precision.</p>
+                <p>Hand-crafted engineering delivers explosive acceleration and breathtaking top speed.</p>
             </div>
-            <img src="https://images.pexels.com/photos/28852292/pexels-photo-28852292/free-photo-of-close-up-of-ferrari-engine-parts-in-detail.jpeg" alt="Engine Detail">
+            <img src="https://images.pexels.com/photos/28852292/pexels-photo-28852292/free-photo-of-close-up-of-ferrari-engine-parts-in-detail.jpeg" alt="Engine">
         </div>
     </section>
+
     <section id="interior">
         <div class="full-bleed" style="background-image: url('https://images.pexels.com/photos/18823134/pexels-photo-18823134/free-photo-of-modern-mercedes-car-interior.jpeg');">
             <h2>Crafted Interior Excellence</h2>
         </div>
     </section>
+
     <footer id="contact">
         <h2>Begin Your Journey</h2>
-        <p>Submit an inquiry to join an exclusive world of luxury.</p>
-        <form id="inquiryForm">
-            <div class="form-group">
-                <input type="text" id="name" placeholder="Your Name" required>
-            </div>
-            <div class="form-group">
-                <input type="email" id="email" placeholder="Your Email" required>
-            </div>
-            <div class="form-group">
-                <input type="tel" id="phone" placeholder="Your Phone (optional)">
-            </div>
-            <div class="form-group">
-                <select id="modelSelect" required>
-                    <option value="">Select Interested Model</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <textarea id="message" placeholder="Your Message" required></textarea>
-            </div>
-            <button type="submit" class="cta">Submit Inquiry</button>
-        </form>
-
-        <!-- Success Modal -->
-        <div id="modalOverlay" class="modal-overlay">
-            <div class="modal-content">
-                <h2>Inquiry Received</h2>
-                <div id="modalDetails" class="modal-detail-box"></div>
-                <p>Thank you! Our concierge will contact you shortly to finalize your bespoke experience.</p>
-                <button id="closeModal" class="cta" style="margin-top: 20px;">Close</button>
-            </div>
-        </div>
-
+        <p style="margin-bottom: 30px;">Join an exclusive world of South African performance and luxury.</p>
+        <button class="cta" onclick="openModal()">Inquire Now</button>
         <p style="margin-top: 50px; opacity: 0.6;">© 2026 Apex Motors SA. All rights reserved.</p>
     </footer>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+    <div id="inquiryModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 style="margin-bottom: 20px;">Price List & Inquiry</h2>
+            
+            <div class="modal-item">
+                <span><strong>Apex Vortex</strong></span>
+                <span class="price">R5,950,000</span>
+            </div>
+            <div class="modal-item">
+                <span><strong>Apex Inferno</strong></span>
+                <span class="price">R6,950,000</span>
+            </div>
+            <div class="modal-item">
+                <span><strong>Apex Phantom</strong></span>
+                <span class="price">R8,500,000</span>
+            </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyALnxMCW74TgU5oODOyhv2_FAylb264PC4",
-            authDomain: "schrodinger-linear-project.firebaseapp.com",
-            databaseURL: "https://schrodinger-linear-project-default-rtdb.firebaseio.com",
-            projectId: "schrodinger-linear-project",
-            storageBucket: "schrodinger-linear-project.firebasestorage.app",
-            messagingSenderId: "176065453541",
-            appId: "1:176065453541:web:497507480bf78a7e8b630c"
-        };
+            <div class="contact-info">
+                <h3>Contact Our Concierge</h3>
+                <p style="margin-top: 10px;">📧 <strong>Email:</strong> sales@apexmotors.co.za</p>
+                <p>📞 <strong>Phone:</strong> +27 (0) 11 555 0123</p>
+                <p>📍 <strong>Showroom:</strong> Sandton, Johannesburg</p>
+                <button class="cta" style="margin-top: 20px; width: 100%;" onclick="window.location.href='mailto:sales@apexmotors.co.za?subject=Inquiry'">Send Email Directly</button>
+            </div>
+        </div>
+    </div>
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+    <script>
+        function openModal() {
+            document.getElementById('inquiryModal').style.display = "block";
+            document.body.style.overflow = "hidden"; // Prevent background scroll
+        }
 
-        const grid = document.getElementById('modelsGrid');
-        const select = document.getElementById('modelSelect');
-        const modelsRef = ref(db, 'models');
-        const inquiriesRef = ref(db, 'inquiries');
+        function closeModal() {
+            document.getElementById('inquiryModal').style.display = "none";
+            document.body.style.overflow = "auto";
+        }
 
-        let localModels = []; // Store models locally for price lookup
-
-        // Load models from Firebase
-        onValue(modelsRef, (snapshot) => {
-            const models = snapshot.val();
-            grid.innerHTML = '';
-            select.innerHTML = '<option value="">Select Interested Model</option>';
-
-            if (models) {
-                localModels = Object.values(models);
-                localModels.forEach((model, index) => {
-                    // Card for grid
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    card.innerHTML = `
-                        <img src="${model.img || 'https://images.pexels.com/photos/8664307/pexels-photo-8664307.jpeg'}" alt="${model.name}" loading="lazy">
-                        <div class="overlay">
-                            <h3>${model.name}</h3>
-                            <p>${model.desc || ''}</p>
-                            <p class="price">${model.price || 'Price on request'}</p>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-
-                    // Option for dropdown
-                    const opt = document.createElement('option');
-                    opt.value = model.name;
-                    opt.textContent = model.name;
-                    select.appendChild(opt);
-                });
-            } else {
-                grid.innerHTML = '<p style="grid-column: 1 / -1; text-align:center; color:#666;">No models available yet.</p>';
+        // Close modal if user clicks outside of it
+        window.onclick = function(event) {
+            let modal = document.getElementById('inquiryModal');
+            if (event.target == modal) {
+                closeModal();
             }
-        });
-
-        // Form submission - EVERY inquiry is saved to Firebase
-        const form = document.getElementById('inquiryForm');
-        const modal = document.getElementById('modalOverlay');
-        const modalDetails = document.getElementById('modalDetails');
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const selectedName = select.value;
-            const modelData = localModels.find(m => m.name === selectedName);
-
-            const inquiry = {
-                name: document.getElementById('name').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                phone: document.getElementById('phone').value.trim() || 'Not provided',
-                model: selectedName,
-                price: modelData ? modelData.price : 'Price on request',
-                message: document.getElementById('message').value.trim(),
-                timestamp: new Date().toISOString(),
-                status: 'new' // Optional: for admin tracking
-            };
-
-            // Save to Firebase Realtime Database (every submission is stored here)
-            push(inquiriesRef, inquiry)
-                .then(() => {
-                    // Success: Show modal with summary
-                    modalDetails.innerHTML = `
-                        <strong>Name:</strong> ${inquiry.name}<br>
-                        <strong>Email:</strong> ${inquiry.email}<br>
-                        <strong>Phone:</strong> ${inquiry.phone}<br>
-                        <strong>Model:</strong> ${inquiry.model}<br>
-                        <strong>Price Range:</strong> ${inquiry.price}<br>
-                        <strong>Date:</strong> ${new Date(inquiry.timestamp).toLocaleDateString()}
-                    `;
-                    modal.classList.add('show');
-                    form.reset();
-                })
-                .catch((error) => {
-                    alert('Error saving inquiry. Please try again. (Error: ' + error.message + ')');
-                });
-        });
-
-        // Close modal
-        document.getElementById('closeModal').onclick = () => modal.classList.remove('show');
-        modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('show'); };
+        }
     </script>
+
 </body>
 </html>
