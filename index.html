@@ -15,7 +15,7 @@
             scroll-behavior: smooth;
         }
         h1, h2, h3 { font-family: 'Playfair Display', serif; color: #000; }
-      
+     
         /* Navigation */
         nav {
             position: fixed;
@@ -60,7 +60,7 @@
             transition: width 0.4s ease;
         }
         nav a:hover::after { width: 100%; }
-      
+     
         /* Hero */
         #hero {
             height: 100vh;
@@ -112,7 +112,7 @@
             background: #a00;
             transform: scale(1.1);
         }
-      
+     
         /* Sections */
         section { padding: 120px 50px; }
         .section-title {
@@ -120,13 +120,13 @@
             font-size: 4rem;
             margin-bottom: 80px;
         }
-      
+     
         /* Models Gallery */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 40px;
-            max-width: 1400px;
+            max宽度: 1400px;
             margin: 0 auto;
         }
         .card {
@@ -158,7 +158,7 @@
         .overlay h3 { font-size: 2.5rem; margin-bottom: 10px; color: #000; }
         .overlay p { font-size: 1.2rem; color: #111; }
         .price { font-weight: 700; color: #c00; margin-top: 10px; }
-      
+     
         /* Performance Split */
         .split {
             display: grid;
@@ -174,7 +174,7 @@
         }
         .text-content h2 { font-size: 3.5rem; margin-bottom: 30px; }
         .text-content p { font-size: 1.3rem; line-height: 1.8; color: #333; }
-      
+     
         /* Full Bleed Sections */
         .full-bleed {
             height: 80vh;
@@ -198,7 +198,7 @@
             z-index: 1;
             color: #000;
         }
-      
+     
         /* Footer & Form */
         footer {
             padding: 100px 50px;
@@ -219,8 +219,15 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 1.1rem;
+            background: #fff;
+            transition: border 0.3s;
         }
-
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #c00;
+        }
+        .form-group textarea { min-height: 150px; resize: vertical; }
+     
         /* Modal Styles */
         .modal-overlay {
             display: none;
@@ -239,6 +246,7 @@
             max-width: 550px;
             width: 90%;
             text-align: center;
+            animation: zoomIn 0.5s ease-out;
         }
         .modal-detail-box {
             background: #f9f9f9;
@@ -248,7 +256,6 @@
             text-align: left;
             border-left: 4px solid #c00;
         }
-
         /* Keyframes */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-60px); }
@@ -257,6 +264,10 @@
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
+        }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
@@ -271,20 +282,17 @@
             <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
-
     <section id="hero">
         <h1>Engineered for the Extraordinary</h1>
         <p>Proudly South African Performance & Design</p>
         <a href="#models" class="cta">Explore the Collection</a>
     </section>
-
     <section id="models">
         <h2 class="section-title">The South African Collection</h2>
         <div class="grid" id="modelsGrid">
-            <p style="text-align: center;">Loading models...</p>
+            <p style="text-align: center; grid-column: 1 / -1;">Loading models...</p>
         </div>
     </section>
-
     <section id="performance">
         <h2 class="section-title">Uncompromising South African Performance</h2>
         <div class="split">
@@ -295,13 +303,11 @@
             <img src="https://images.pexels.com/photos/28852292/pexels-photo-28852292/free-photo-of-close-up-of-ferrari-engine-parts-in-detail.jpeg" alt="Engine Detail">
         </div>
     </section>
-
     <section id="interior">
         <div class="full-bleed" style="background-image: url('https://images.pexels.com/photos/18823134/pexels-photo-18823134/free-photo-of-modern-mercedes-car-interior.jpeg');">
             <h2>Crafted Interior Excellence</h2>
         </div>
     </section>
-
     <footer id="contact">
         <h2>Begin Your Journey</h2>
         <p>Submit an inquiry to join an exclusive world of luxury.</p>
@@ -326,6 +332,7 @@
             <button type="submit" class="cta">Submit Inquiry</button>
         </form>
 
+        <!-- Success Modal -->
         <div id="modalOverlay" class="modal-overlay">
             <div class="modal-content">
                 <h2>Inquiry Received</h2>
@@ -358,75 +365,88 @@
         const grid = document.getElementById('modelsGrid');
         const select = document.getElementById('modelSelect');
         const modelsRef = ref(db, 'models');
-        
-        let localModels = []; // To store data for the modal
+        const inquiriesRef = ref(db, 'inquiries');
 
-        // Load models
+        let localModels = []; // Store models locally for price lookup
+
+        // Load models from Firebase
         onValue(modelsRef, (snapshot) => {
             const models = snapshot.val();
             grid.innerHTML = '';
             select.innerHTML = '<option value="">Select Interested Model</option>';
-            
+
             if (models) {
                 localModels = Object.values(models);
-                localModels.forEach((model) => {
-                    // Fill Grid
+                localModels.forEach((model, index) => {
+                    // Card for grid
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.innerHTML = `
-                        <img src="${model.img}" alt="${model.name}">
+                        <img src="${model.img || 'https://images.pexels.com/photos/8664307/pexels-photo-8664307.jpeg'}" alt="${model.name}" loading="lazy">
                         <div class="overlay">
                             <h3>${model.name}</h3>
-                            <p>${model.desc}</p>
-                            <p class="price">${model.price}</p>
+                            <p>${model.desc || ''}</p>
+                            <p class="price">${model.price || 'Price on request'}</p>
                         </div>
                     `;
                     grid.appendChild(card);
 
-                    // Fill Select Dropdown
+                    // Option for dropdown
                     const opt = document.createElement('option');
                     opt.value = model.name;
                     opt.textContent = model.name;
                     select.appendChild(opt);
                 });
+            } else {
+                grid.innerHTML = '<p style="grid-column: 1 / -1; text-align:center; color:#666;">No models available yet.</p>';
             }
         });
 
-        // Form Submission
+        // Form submission - EVERY inquiry is saved to Firebase
         const form = document.getElementById('inquiryForm');
         const modal = document.getElementById('modalOverlay');
         const modalDetails = document.getElementById('modalDetails');
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            
+
             const selectedName = select.value;
             const modelData = localModels.find(m => m.name === selectedName);
 
             const inquiry = {
                 name: document.getElementById('name').value.trim(),
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value || 'N/A',
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim() || 'Not provided',
                 model: selectedName,
-                price: modelData ? modelData.price : 'Requesting Quote',
-                message: document.getElementById('message').value,
-                timestamp: new Date().toISOString()
+                price: modelData ? modelData.price : 'Price on request',
+                message: document.getElementById('message').value.trim(),
+                timestamp: new Date().toISOString(),
+                status: 'new' // Optional: for admin tracking
             };
 
-            push(ref(db, 'inquiries'), inquiry).then(() => {
-                // Show Model, Price, and Contact details in the modal
-                modalDetails.innerHTML = `
-                    <strong>Interested Model:</strong> ${inquiry.model}<br>
-                    <strong>Estimated Price:</strong> ${inquiry.price}<br>
-                    <strong>Your Contact:</strong> ${inquiry.email}<br>
-                    <strong>Reference:</strong> ${inquiry.timestamp.split('T')[0]}
-                `;
-                modal.classList.add('show');
-                form.reset();
-            });
+            // Save to Firebase Realtime Database (every submission is stored here)
+            push(inquiriesRef, inquiry)
+                .then(() => {
+                    // Success: Show modal with summary
+                    modalDetails.innerHTML = `
+                        <strong>Name:</strong> ${inquiry.name}<br>
+                        <strong>Email:</strong> ${inquiry.email}<br>
+                        <strong>Phone:</strong> ${inquiry.phone}<br>
+                        <strong>Model:</strong> ${inquiry.model}<br>
+                        <strong>Price Range:</strong> ${inquiry.price}<br>
+                        <strong>Date:</strong> ${new Date(inquiry.timestamp).toLocaleDateString()}
+                    `;
+                    modal.classList.add('show');
+                    form.reset();
+                })
+                .catch((error) => {
+                    alert('Error saving inquiry. Please try again. (Error: ' + error.message + ')');
+                });
         });
 
+        // Close modal
         document.getElementById('closeModal').onclick = () => modal.classList.remove('show');
+        modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('show'); };
     </script>
 </body>
 </html>
