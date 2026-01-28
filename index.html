@@ -15,7 +15,7 @@
             scroll-behavior: smooth;
         }
         h1, h2, h3 { font-family: 'Playfair Display', serif; color: #000; }
-       
+      
         /* Navigation */
         nav {
             position: fixed;
@@ -30,10 +30,10 @@
             align-items: center;
             transition: all 0.4s ease;
         }
-        nav .logo { 
-            font-size: 2rem; 
-            font-weight: 700; 
-            letter-spacing: 2px; 
+        nav .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
             color: #000;
         }
         nav ul {
@@ -62,7 +62,7 @@
         nav a:hover::after {
             width: 100%;
         }
-       
+      
         /* Hero */
         #hero {
             height: 100vh;
@@ -108,11 +108,11 @@
             opacity: 0;
             animation: fadeInDown 1.5s ease-out 1s forwards, pulse 3s infinite ease-in-out 2s;
         }
-        .cta:hover { 
-            background: #a00; 
-            transform: scale(1.1); 
+        .cta:hover {
+            background: #a00;
+            transform: scale(1.1);
         }
-       
+      
         /* Sections */
         section { padding: 120px 50px; }
         .section-title {
@@ -122,7 +122,7 @@
             opacity: 0;
             animation: fadeInUp 1s ease-out forwards;
         }
-       
+      
         /* Models Gallery */
         #models { background: #fff; }
         .grid {
@@ -142,11 +142,6 @@
             animation: fadeInUp 0.8s ease-out forwards;
             transition: transform 0.6s ease, box-shadow 0.6s ease;
         }
-        .grid .card:nth-child(1) { animation-delay: 0.2s; }
-        .grid .
-
-card:nth-child(2) { animation-delay: 0.4s; }
-        .grid .card:nth-child(3) { animation-delay: 0.6s; }
         .card:hover {
             transform: translateY(-10px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
@@ -171,7 +166,7 @@ card:nth-child(2) { animation-delay: 0.4s; }
         .overlay h3 { font-size: 2.5rem; margin-bottom: 10px; color: #000; }
         .overlay p { font-size: 1.2rem; color: #111; }
         .price { font-weight: 700; color: #c00; margin-top: 10px; }
-       
+      
         /* Performance Split */
         .split {
             display: grid;
@@ -181,12 +176,12 @@ card:nth-child(2) { animation-delay: 0.4s; }
             margin: 0 auto;
             align-items: center;
         }
-        .split img { 
-            width: 100%; 
-            border-radius: 12px; 
+        .split img {
+            width: 100%;
+            border-radius: 12px;
             opacity: 0;
             transform: translateX(50px);
-            animation: fadeInRight 1.2s ease-out 0.3s forwards;
+            animation: fadeInRight 1 1.2s ease-out 0.3s forwards;
         }
         .text-content {
             opacity: 0;
@@ -195,7 +190,7 @@ card:nth-child(2) { animation-delay: 0.4s; }
         }
         .text-content h2 { font-size: 3.5rem; margin-bottom: 30px; }
         .text-content p { font-size: 1.3rem; line-height: 1.8; color: #333; }
-       
+      
         /* Interior & Lifestyle */
         .full-bleed {
             height: 80vh;
@@ -222,17 +217,88 @@ card:nth-child(2) { animation-delay: 0.4s; }
             transform: scale(0.9);
             animation: zoomIn 2s ease-out forwards;
         }
-       
-        /* Footer */
+      
+        /* Footer & Form */
         footer {
             padding: 100px 50px;
             background: #fff;
             text-align: center;
             color: #111;
         }
-        footer .cta { background: #c00; }
-        footer .cta:hover { background: #a00; }
-       
+        #contact form {
+            max-width: 700px;
+            margin: 50px auto 0;
+        }
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            background: #fff;
+            transition: border 0.3s;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #c00;
+        }
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        #contact button.cta {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 50px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            animation: zoomIn 0.5s ease-out;
+        }
+        .modal-content h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        .modal-content p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .modal-content .cta {
+            width: auto;
+            padding: 15px 50px;
+        }
+      
         /* Keyframes */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-60px); }
@@ -279,30 +345,8 @@ card:nth-child(2) { animation-delay: 0.4s; }
     <section id="models">
         <h2 class="section-title">The South African Collection</h2>
         <div class="grid">
-            <div class="card">
-                <img src="https://images.pexels.com/photos/8664307/pexels-photo-8664307.jpeg" alt="Apex Vortex" loading="lazy">
-                <div class="overlay">
-                    <h3>Apex Vortex</h3>
-                    <p>0-100 km/h in 3.0s • 800 HP • Pure adrenaline</p>
-                    <p class="price">From R5,950,000</p>
-                </div>
-            </div>
-            <div class="card">
-                <img src="https://images.pexels.com/photos/31078732/pexels-photo-31078732/free-photo-of-red-sports-car-on-scenic-mountain-road.jpeg" alt="Apex Inferno" loading="lazy">
-                <div class="overlay">
-                    <h3>Apex Inferno</h3>
-                    <p>0-100 km/h in 2.8s • Track-focused precision</p>
-                    <p class="price">From R6,950,000</p>
-                </div>
-            </div>
-            <div class="card">
-                <img src="https://images.pexels.com/photos/29115172/pexels-photo-29115172.jpeg?cs=srgb&dl=pexels-tinchflicks-29115172.jpg&fm=jpg" alt="Apex Phantom" loading="lazy">
-                <div class="overlay">
-                    <h3>Apex Phantom</h3>
-                    <p>Grand touring redefined • Unmatched elegance</p>
-                    <p class="price">From R8,500,000</p>
-                </div>
-            </div>
+            <!-- Models will be loaded dynamically from Firebase -->
+            <p style="grid-column: 1 / -1; text-align: center; font-size: 1.5rem; color: #666;">Loading models...</p>
         </div>
     </section>
     <section id="performance">
@@ -312,7 +356,7 @@ card:nth-child(2) { animation-delay: 0.4s; }
                 <h2>Power Without Compromise</h2>
                 <p>Hand-crafted engineering delivers explosive acceleration and breathtaking top speed, inspired by South Africa's dynamic landscapes. Every component is designed for ultimate performance and precision.</p>
             </div>
-            <img src="https://images.pexels.com/photos/28852292/pexels-photo-28852292/free-photo-of-close-up-of-ferrari-engine-parts-in-detail.jpeg" alt="Engine Detail" loading="lazy')"> 
+            <img src="https://images.pexels.com/photos/28852292/pexels-photo-28852292/free-photo-of-close-up-of-ferrari-engine-parts-in-detail.jpeg" alt="Engine Detail" loading="lazy">
         </div>
     </section>
     <section id="interior">
@@ -330,9 +374,140 @@ card:nth-child(2) { animation-delay: 0.4s; }
     </section>
     <footer id="contact">
         <h2>Begin Your Journey</h2>
-        <p>Join an exclusive world of South African performance and luxury.</p>
-        <a href="mailto:info@apexmotors.co.za" class="cta">Inquire Now</a>
+        <p>Submit an inquiry to join an exclusive world of South African performance and luxury.</p>
+        <form id="inquiryForm">
+            <div class="form-group">
+                <input type="text" id="name" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+                <input type="email" id="email" placeholder="Your Email" required>
+            </div>
+            <div class="form-group">
+                <input type="tel" id="phone" placeholder="Your Phone (optional)">
+            </div>
+            <div class="form-group">
+                <select id="model" required>
+                    <option value="">Select Interested Model</option>
+                    <!-- Options populated dynamically from Firebase -->
+                </select>
+            </div>
+            <div class="form-group">
+                <textarea id="message" placeholder="Your Message" required></textarea>
+            </div>
+            <button type="submit" class="cta">Submit Inquiry</button>
+        </form>
+
+        <!-- Success Modal -->
+        <div id="modalOverlay" class="modal-overlay">
+            <div class="modal-content">
+                <h2>Thank You!</h2>
+                <p id="modalMessage"></p>
+                <button id="closeModal" class="cta">Close</button>
+            </div>
+        </div>
+
         <p style="margin-top: 50px; opacity: 0.6;">© 2026 Apex Motors SA. Proudly South African. All rights reserved.</p>
     </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-analytics.js";
+        import { getDatabase, ref, onValue, get, push } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyALnxMCW74TgU5oODOyhv2_FAylb264PC4",
+            authDomain: "schrodinger-linear-project.firebaseapp.com",
+            databaseURL: "https://schrodinger-linear-project-default-rtdb.firebaseio.com",
+            projectId: "schrodinger-linear-project",
+            storageBucket: "schrodinger-linear-project.firebasestorage.app",
+            messagingSenderId: "176065453541",
+            appId: "1:176065453541:web:497507480bf78a7e8b630c",
+            measurementId: "G-VGKT8HW8RP"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+
+        const grid = document.querySelector('.grid');
+        const modelsRef = ref(db, 'models');
+
+        // Load models dynamically
+        onValue(modelsRef, (snapshot) => {
+            grid.innerHTML = '';
+            const models = snapshot.val();
+            if (models) {
+                const modelList = Object.values(models);
+                modelList.forEach((model, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.style.animationDelay = `${index * 0.2 + 0.2}s`;
+                    card.innerHTML = `
+                        <img src="${model.img || 'https://images.pexels.com/photos/8664307/pexels-photo-8664307.jpeg'}" alt="${model.alt || model.name}" loading="lazy">
+                        <div class="overlay">
+                            <h3>${model.name}</h3>
+                            <p>${model.desc}</p>
+                            <p class="price">${model.price}</p>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } else {
+                grid.innerHTML = '<p style="grid-column: 1 / -1; text-align:center; color:#666;">No models available yet.</p>';
+            }
+        });
+
+        // Populate model select dropdown
+        const modelSelect = document.getElementById('model');
+        get(modelsRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                Object.values(snapshot.val()).forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.name;
+                    option.textContent = model.name;
+                    modelSelect.appendChild(option);
+                });
+            }
+        });
+
+        // Handle inquiry form submission
+        const form = document.getElementById('inquiryForm');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalMessage = document.getElementById('modalMessage');
+        const closeModal = document.getElementById('closeModal');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const inquiry = {
+                name: form.name.value.trim, 
+                email: form.email.value,
+                phone: form.phone.value || 'Not provided',
+                model: form.model.value,
+                message: form.message.value,
+                timestamp: new Date().toISOString()
+            };
+            push(ref(db, 'inquiries'), inquiry)
+                .then(() => {
+                    modalMessage.textContent = `Thank you, ${inquiry.name}! Your inquiry has been submitted successfully. We’ll be in touch soon.`;
+                    modalOverlay.classList.add('show');
+                    form.reset();
+                })
+                .catch((error) => {
+                    alert('Error submitting inquiry: ' + error.message);
+                });
+        });
+
+        // Close modal
+        closeModal.addEventListener('click', () => {
+            modalOverlay.classList.remove('show');
+        });
+
+        // Close when clicking outside modal content
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('show');
+            }
+        });
+    </script>
 </body>
 </html>
