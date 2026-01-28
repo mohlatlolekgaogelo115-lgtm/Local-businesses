@@ -59,9 +59,7 @@
             background: #c00;
             transition: width 0.4s ease;
         }
-        nav a:hover::after {
-            width: 100%;
-        }
+        nav a:hover::after { width: 100%; }
       
         /* Hero */
         #hero {
@@ -107,6 +105,8 @@
             transition: all 0.4s;
             opacity: 0;
             animation: fadeInDown 1.5s ease-out 1s forwards, pulse 3s infinite ease-in-out 2s;
+            border: none;
+            cursor: pointer;
         }
         .cta:hover {
             background: #a00;
@@ -119,12 +119,9 @@
             text-align: center;
             font-size: 4rem;
             margin-bottom: 80px;
-            opacity: 0;
-            animation: fadeInUp 1s ease-out forwards;
         }
       
         /* Models Gallery */
-        #models { background: #fff; }
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -137,9 +134,6 @@
             overflow: hidden;
             border-radius: 12px;
             cursor: pointer;
-            opacity: 0;
-            transform: translateY(50px);
-            animation: fadeInUp 0.8s ease-out forwards;
             transition: transform 0.6s ease, box-shadow 0.6s ease;
         }
         .card:hover {
@@ -160,9 +154,7 @@
             width: 100%;
             padding: 40px;
             background: linear-gradient(transparent, rgba(255,255,255,0.95));
-            transition: background 0.6s;
         }
-        .card:hover .overlay { background: rgba(255,255,255,0.98); }
         .overlay h3 { font-size: 2.5rem; margin-bottom: 10px; color: #000; }
         .overlay p { font-size: 1.2rem; color: #111; }
         .price { font-weight: 700; color: #c00; margin-top: 10px; }
@@ -179,19 +171,11 @@
         .split img {
             width: 100%;
             border-radius: 12px;
-            opacity: 0;
-            transform: translateX(50px);
-            animation: fadeInRight 1 1.2s ease-out 0.3s forwards;
-        }
-        .text-content {
-            opacity: 0;
-            transform: translateX(-50px);
-            animation: fadeInLeft 1.2s ease-out 0.3s forwards;
         }
         .text-content h2 { font-size: 3.5rem; margin-bottom: 30px; }
         .text-content p { font-size: 1.3rem; line-height: 1.8; color: #333; }
       
-        /* Interior & Lifestyle */
+        /* Full Bleed Sections */
         .full-bleed {
             height: 80vh;
             background-size: cover;
@@ -207,15 +191,12 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.3);
         }
         .full-bleed h2 {
             font-size: 5rem;
             z-index: 1;
             color: #000;
-            opacity: 0;
-            transform: scale(0.9);
-            animation: zoomIn 2s ease-out forwards;
         }
       
         /* Footer & Form */
@@ -223,7 +204,6 @@
             padding: 100px 50px;
             background: #fff;
             text-align: center;
-            color: #111;
         }
         #contact form {
             max-width: 700px;
@@ -233,92 +213,46 @@
             margin-bottom: 25px;
             text-align: left;
         }
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .form-group input, .form-group textarea, .form-group select {
             width: 100%;
             padding: 16px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-family: 'Inter', sans-serif;
             font-size: 1.1rem;
-            background: #fff;
-            transition: border 0.3s;
-        }
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #c00;
-        }
-        .form-group textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-        #contact button.cta {
-            width: 100%;
-            cursor: pointer;
         }
 
         /* Modal Styles */
         .modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.75);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
             justify-content: center;
             align-items: center;
             z-index: 2000;
         }
-        .modal-overlay.show {
-            display: flex;
-        }
+        .modal-overlay.show { display: flex; }
         .modal-content {
             background: #fff;
             padding: 50px;
             border-radius: 16px;
-            text-align: center;
-            max-width: 500px;
+            max-width: 550px;
             width: 90%;
-            animation: zoomIn 0.5s ease-out;
+            text-align: center;
         }
-        .modal-content h2 {
-            font-size: 3rem;
-            margin-bottom: 20px;
+        .modal-detail-box {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+            border-left: 4px solid #c00;
         }
-        .modal-content p {
-            font-size: 1.3rem;
-            margin-bottom: 30px;
-            color: #333;
-        }
-        .modal-content .cta {
-            width: auto;
-            padding: 15px 50px;
-        }
-      
+
         /* Keyframes */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-60px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(60px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInLeft {
-            from { opacity: 0; transform: translateX(-80px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes fadeInRight {
-            from { opacity: 0; transform: translateX(80px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes zoomIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
         }
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
@@ -337,44 +271,40 @@
             <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
+
     <section id="hero">
         <h1>Engineered for the Extraordinary</h1>
         <p>Proudly South African Performance & Design</p>
         <a href="#models" class="cta">Explore the Collection</a>
     </section>
+
     <section id="models">
         <h2 class="section-title">The South African Collection</h2>
-        <div class="grid">
-            <!-- Models will be loaded dynamically from Firebase -->
-            <p style="grid-column: 1 / -1; text-align: center; font-size: 1.5rem; color: #666;">Loading models...</p>
+        <div class="grid" id="modelsGrid">
+            <p style="text-align: center;">Loading models...</p>
         </div>
     </section>
+
     <section id="performance">
         <h2 class="section-title">Uncompromising South African Performance</h2>
         <div class="split">
             <div class="text-content">
                 <h2>Power Without Compromise</h2>
-                <p>Hand-crafted engineering delivers explosive acceleration and breathtaking top speed, inspired by South Africa's dynamic landscapes. Every component is designed for ultimate performance and precision.</p>
+                <p>Hand-crafted engineering delivers explosive acceleration and breathtaking top speed. Every component is designed for ultimate performance and precision.</p>
             </div>
-            <img src="https://images.pexels.com/photos/28852292/pexels-photo-28852292/free-photo-of-close-up-of-ferrari-engine-parts-in-detail.jpeg" alt="Engine Detail" loading="lazy">
+            <img src="https://images.pexels.com/photos/28852292/pexels-photo-28852292/free-photo-of-close-up-of-ferrari-engine-parts-in-detail.jpeg" alt="Engine Detail">
         </div>
     </section>
+
     <section id="interior">
         <div class="full-bleed" style="background-image: url('https://images.pexels.com/photos/18823134/pexels-photo-18823134/free-photo-of-modern-mercedes-car-interior.jpeg');">
             <h2>Crafted Interior Excellence</h2>
         </div>
     </section>
-    <section id="lifestyle">
-        <div class="full-bleed" style="background-image: url('https://images.pexels.com/photos/18259553/pexels-photo-18259553/free-photo-of-expensive-sports-car-at-night.jpeg');">
-            <h2>Live the Apex Life</h2>
-        </div>
-        <div class="full-bleed" style="background-image: url('https://images.pexels.com/photos/5288701/pexels-photo-5288701.jpeg');">
-            <h2>Conquer Every Horizon</h2>
-        </div>
-    </section>
+
     <footer id="contact">
         <h2>Begin Your Journey</h2>
-        <p>Submit an inquiry to join an exclusive world of South African performance and luxury.</p>
+        <p>Submit an inquiry to join an exclusive world of luxury.</p>
         <form id="inquiryForm">
             <div class="form-group">
                 <input type="text" id="name" placeholder="Your Name" required>
@@ -386,9 +316,8 @@
                 <input type="tel" id="phone" placeholder="Your Phone (optional)">
             </div>
             <div class="form-group">
-                <select id="model" required>
+                <select id="modelSelect" required>
                     <option value="">Select Interested Model</option>
-                    <!-- Options populated dynamically from Firebase -->
                 </select>
             </div>
             <div class="form-group">
@@ -397,22 +326,21 @@
             <button type="submit" class="cta">Submit Inquiry</button>
         </form>
 
-        <!-- Success Modal -->
         <div id="modalOverlay" class="modal-overlay">
             <div class="modal-content">
-                <h2>Thank You!</h2>
-                <p id="modalMessage"></p>
-                <button id="closeModal" class="cta">Close</button>
+                <h2>Inquiry Received</h2>
+                <div id="modalDetails" class="modal-detail-box"></div>
+                <p>Thank you! Our concierge will contact you shortly to finalize your bespoke experience.</p>
+                <button id="closeModal" class="cta" style="margin-top: 20px;">Close</button>
             </div>
         </div>
 
-        <p style="margin-top: 50px; opacity: 0.6;">© 2026 Apex Motors SA. Proudly South African. All rights reserved.</p>
+        <p style="margin-top: 50px; opacity: 0.6;">© 2026 Apex Motors SA. All rights reserved.</p>
     </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-analytics.js";
-        import { getDatabase, ref, onValue, get, push } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+        import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyALnxMCW74TgU5oODOyhv2_FAylb264PC4",
@@ -421,29 +349,32 @@
             projectId: "schrodinger-linear-project",
             storageBucket: "schrodinger-linear-project.firebasestorage.app",
             messagingSenderId: "176065453541",
-            appId: "1:176065453541:web:497507480bf78a7e8b630c",
-            measurementId: "G-VGKT8HW8RP"
+            appId: "1:176065453541:web:497507480bf78a7e8b630c"
         };
 
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
         const db = getDatabase(app);
 
-        const grid = document.querySelector('.grid');
+        const grid = document.getElementById('modelsGrid');
+        const select = document.getElementById('modelSelect');
         const modelsRef = ref(db, 'models');
+        
+        let localModels = []; // To store data for the modal
 
-        // Load models dynamically
+        // Load models
         onValue(modelsRef, (snapshot) => {
-            grid.innerHTML = '';
             const models = snapshot.val();
+            grid.innerHTML = '';
+            select.innerHTML = '<option value="">Select Interested Model</option>';
+            
             if (models) {
-                const modelList = Object.values(models);
-                modelList.forEach((model, index) => {
+                localModels = Object.values(models);
+                localModels.forEach((model) => {
+                    // Fill Grid
                     const card = document.createElement('div');
                     card.className = 'card';
-                    card.style.animationDelay = `${index * 0.2 + 0.2}s`;
                     card.innerHTML = `
-                        <img src="${model.img || 'https://images.pexels.com/photos/8664307/pexels-photo-8664307.jpeg'}" alt="${model.alt || model.name}" loading="lazy">
+                        <img src="${model.img}" alt="${model.name}">
                         <div class="overlay">
                             <h3>${model.name}</h3>
                             <p>${model.desc}</p>
@@ -451,63 +382,51 @@
                         </div>
                     `;
                     grid.appendChild(card);
-                });
-            } else {
-                grid.innerHTML = '<p style="grid-column: 1 / -1; text-align:center; color:#666;">No models available yet.</p>';
-            }
-        });
 
-        // Populate model select dropdown
-        const modelSelect = document.getElementById('model');
-        get(modelsRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                Object.values(snapshot.val()).forEach(model => {
-                    const option = document.createElement('option');
-                    option.value = model.name;
-                    option.textContent = model.name;
-                    modelSelect.appendChild(option);
+                    // Fill Select Dropdown
+                    const opt = document.createElement('option');
+                    opt.value = model.name;
+                    opt.textContent = model.name;
+                    select.appendChild(opt);
                 });
             }
         });
 
-        // Handle inquiry form submission
+        // Form Submission
         const form = document.getElementById('inquiryForm');
-        const modalOverlay = document.getElementById('modalOverlay');
-        const modalMessage = document.getElementById('modalMessage');
-        const closeModal = document.getElementById('closeModal');
+        const modal = document.getElementById('modalOverlay');
+        const modalDetails = document.getElementById('modalDetails');
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            const selectedName = select.value;
+            const modelData = localModels.find(m => m.name === selectedName);
+
             const inquiry = {
-                name: form.name.value.trim, 
-                email: form.email.value,
-                phone: form.phone.value || 'Not provided',
-                model: form.model.value,
-                message: form.message.value,
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value || 'N/A',
+                model: selectedName,
+                price: modelData ? modelData.price : 'Requesting Quote',
+                message: document.getElementById('message').value,
                 timestamp: new Date().toISOString()
             };
-            push(ref(db, 'inquiries'), inquiry)
-                .then(() => {
-                    modalMessage.textContent = `Thank you, ${inquiry.name}! Your inquiry has been submitted successfully. We’ll be in touch soon.`;
-                    modalOverlay.classList.add('show');
-                    form.reset();
-                })
-                .catch((error) => {
-                    alert('Error submitting inquiry: ' + error.message);
-                });
+
+            push(ref(db, 'inquiries'), inquiry).then(() => {
+                // Show Model, Price, and Contact details in the modal
+                modalDetails.innerHTML = `
+                    <strong>Interested Model:</strong> ${inquiry.model}<br>
+                    <strong>Estimated Price:</strong> ${inquiry.price}<br>
+                    <strong>Your Contact:</strong> ${inquiry.email}<br>
+                    <strong>Reference:</strong> ${inquiry.timestamp.split('T')[0]}
+                `;
+                modal.classList.add('show');
+                form.reset();
+            });
         });
 
-        // Close modal
-        closeModal.addEventListener('click', () => {
-            modalOverlay.classList.remove('show');
-        });
-
-        // Close when clicking outside modal content
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                modalOverlay.classList.remove('show');
-            }
-        });
+        document.getElementById('closeModal').onclick = () => modal.classList.remove('show');
     </script>
 </body>
 </html>
