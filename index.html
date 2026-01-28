@@ -3,67 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexGen Auto-Diag</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Apex Motors - Engineered for the Extraordinary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #000; 
+            color: #fff; 
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 30px 50px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        nav .logo { font-size: 2rem; font-weight: 700; letter-spacing: 2px; }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.4s;
+        }
+        nav a:hover { color: #c00; }
+        
+        /* Hero */
+        #hero {
+            height: 100vh;
+            background: url('https://images.pexels.com/photos/14624139/pexels-photo-14624139.jpeg') center/cover no-repeat fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        #hero h1 {
+            font-size: 6rem;
+            margin-bottom: 20px;
+            z-index: 1;
+            animation: fadeIn 2s ease-out;
+        }
+        #hero p {
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            z-index: 1;
+        }
+        .cta {
+            z-index: 1;
+            padding: 15px 40px;
+            background: rgba(200, 0, 0, 0.8);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.4s;
+        }
+        .cta:hover { background: #c00; transform: scale(1.1); }
+        
+        /* Sections */
+        section { padding: 120px 50px; }
+        .section-title {
+            text-align: center;
+            font-size: 4rem;
+            margin-bottom: 80px;
+        }
+        
+        /* Models Gallery */
+        #models { background: #111; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+        .card:hover img { transform: scale(1.1); }
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 40px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            transition: background 0.6s;
+        }
+        .card:hover .overlay { background: rgba(0,0,0,0.95); }
+        .overlay h3 { font-size: 2.5rem; margin-bottom: 10px; }
+        .overlay p { font-size: 1.2rem; opacity: 0.9; }
+        
+        /* Performance Split */
+        .split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+            align-items: center;
+        }
+        .split img { width: 100%; border-radius: 12px; }
+        .text-content h2 { font-size: 3.5rem; margin-bottom: 30px; }
+        .text-content p { font-size: 1.3rem; line-height: 1.8; opacity: 0.9; }
+        
+        /* Interior & Lifestyle */
+        .full-bleed {
+            height: 80vh;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+        .full-bleed::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .full-bleed h2 {
+            font-size: 5rem;
+            z-index: 1;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 100px 50px;
+            background: #000;
+            text-align: center;
+        }
+        footer .cta { background: #c00; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
-<body class="bg-slate-900 text-white font-sans">
+<body>
 
-    <div class="max-w-4xl mx-auto p-8">
-        <header class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-blue-400">NexGen AI Diagnostics</h1>
-            <p class="text-slate-400">Improved Real-Time Vehicle Analysis</p>
-        </header>
+    <nav>
+        <div class="logo">APEX</div>
+        <ul>
+            <li><a href="#models">Models</a></li>
+            <li><a href="#performance">Performance</a></li>
+            <li><a href="#interior">Interior</a></li>
+            <li><a href="#lifestyle">Lifestyle</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
-                <h2 class="text-xl mb-4 font-semibold">Vehicle Input</h2>
-                <div class="space-y-4">
-                    <input id="vin" type="text" placeholder="Enter VIN (Optional)" class="w-full p-3 rounded bg-slate-700 border-none">
-                    <input id="mileage" type="number" placeholder="Mileage" class="w-full p-3 rounded bg-slate-700 border-none">
-                    
-                    <label class="block text-sm text-slate-400">Select Symptoms:</label>
-                    <select id="symptoms" class="w-full p-3 rounded bg-slate-700 border-none" multiple>
-                        <option value="squealing">Squealing Noise</option>
-                        <option value="shaking_steering">Shaking Steering Wheel</option>
-                        <option value="sweet_smell">Sweet/Sugary Smell</option>
-                    </select>
-                    
-                    <button onclick="runDiagnosis()" class="w-full bg-blue-600 hover:bg-blue-500 p-3 rounded font-bold transition">Analyze Vehicle</button>
+    <section id="hero">
+        <h1>Engineered for the Extraordinary</h1>
+        <p>Where performance meets artistry</p>
+        <a href="#models" class="cta">Explore the Collection</a>
+    </section>
+
+    <section id="models">
+        <h2 class="section-title">The Collection</h2>
+        <div class="grid">
+            <div class="card">
+                <img src="https://images.pexels.com/photos/8664307/pexels-photo-8664307.jpeg" alt="Apex Vortex" loading="lazy">
+                <div class="overlay">
+                    <h3>Apex Vortex</h3>
+                    <p>0-60 in 2.8s • 800 HP • Pure adrenaline</p>
                 </div>
             </div>
-
-            <div id="result-box" class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 hidden">
-                <h2 class="text-xl mb-4 font-semibold text-green-400">AI Analysis</h2>
-                <div id="analysis-output" class="text-slate-300 space-y-3">
-                    </div>
+            <div class="card">
+                <img src="https://images.pexels.com/photos/31078732/pexels-photo-31078732/free-photo-of-red-sports-car-on-scenic-mountain-road.jpeg" alt="Apex Inferno" loading="lazy">
+                <div class="overlay">
+                    <h3>Apex Inferno</h3>
+                    <p>0-60 in 2.6s • Track-focused precision</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.pexels.com/photos/29115172/pexels-photo-29115172.jpeg?cs=srgb&dl=pexels-tinchflicks-29115172.jpg&fm=jpg" alt="Apex Phantom" loading="lazy">
+                <div class="overlay">
+                    <h3>Apex Phantom</h3>
+                    <p>Grand touring redefined • Unmatched elegance</p>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <script>
-        async function runDiagnosis() {
-            const vin = document.getElementById('vin').value;
-            const mileage = document.getElementById('mileage').value;
-            const symptoms = Array.from(document.getElementById('symptoms').selectedOptions).map(o => o.value);
+    <section id="performance">
+        <h2 class="section-title">Uncompromising Performance</h2>
+        <div class="split">
+            <div class="text-content">
+                <h2>Power Without Compromise</h2>
+                <p>Hand-built V12 engineering delivers explosive acceleration and breathtaking top speed. Every component is crafted for ultimate performance and auditory perfection.</p>
+            </div>
+            <img src="https://images.pexels.com/photos/28852292/pexels-photo-28852292/free-photo-of-close-up-of-ferrari-engine-parts-in-detail.jpeg" alt="Engine Detail" loading="lazy">
+        </div>
+    </section>
 
-            // Mocking the API call to the Python Backend
-            const resultBox = document.getElementById('result-box');
-            const output = document.getElementById('analysis-output');
-            
-            resultBox.classList.remove('hidden');
-            output.innerHTML = "<em>Analyzing sensor data...</em>";
+    <section id="interior">
+        <div class="full-bleed" style="background-image: url('https://images.pexels.com/photos/18823134/pexels-photo-18823134/free-photo-of-modern-mercedes-car-interior.jpeg');">
+            <h2>Crafted Interior Excellence</h2>
+        </div>
+    </section>
 
-            // Simulate Network Delay
-            setTimeout(() => {
-                output.innerHTML = `
-                    <div class="p-3 bg-red-900/30 border border-red-500 rounded">
-                        <strong>Possible Issue:</strong> ${symptoms.includes('squealing') ? 'Serpentine Belt Wear' : 'Fluid Leak'}
-                        <p class="text-sm mt-1">AI Confidence: 94%</p>
-                    </div>
-                    <p class="mt-4 text-sm text-slate-400">Recommended Action: Check belt tension or inspect radiator hoses.</p>
-                `;
-            }, 1500);
-        }
-    </script>
+    <section id="lifestyle">
+        <div class="full-bleed" style="background-image: url('https://images.pexels.com/photos/18259553/pexels-photo-18259553/free-photo-of-expensive-sports-car-at-night.jpeg');">
+            <h2>Live the Apex Life</h2>
+        </div>
+        <div class="full-bleed" style="background-image: url('https://images.pexels.com/photos/5288701/pexels-photo-5288701.jpeg');">
+            <h2>Conquer Every Horizon</h2>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <h2>Begin Your Journey</h2>
+        <p>Join an exclusive world of performance and luxury.</p>
+        <a href="mailto:info@apexmotors.com" class="cta">Inquire Now</a>
+        <p style="margin-top: 50px; opacity: 0.6;">© 2026 Apex Motors. All rights reserved.</p>
+    </footer>
+
 </body>
 </html>
