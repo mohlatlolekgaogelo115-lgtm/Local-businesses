@@ -7,42 +7,62 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: #000; 
-            color: #fff; 
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: #111;
             overflow-x: hidden;
             scroll-behavior: smooth;
         }
-        h1, h2, h3 { font-family: 'Playfair Display', serif; }
-        
+        h1, h2, h3 { font-family: 'Playfair Display', serif; color: #000; }
+       
         /* Navigation */
         nav {
             position: fixed;
             top: 0;
             width: 100%;
             padding: 30px 50px;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             z-index: 1000;
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: all 0.4s ease;
         }
-        nav .logo { font-size: 2rem; font-weight: 700; letter-spacing: 2px; }
+        nav .logo { 
+            font-size: 2rem; 
+            font-weight: 700; 
+            letter-spacing: 2px; 
+            color: #000;
+        }
         nav ul {
             list-style: none;
             display: flex;
             gap: 40px;
         }
         nav a {
-            color: #fff;
+            color: #000;
             text-decoration: none;
             font-weight: 600;
+            position: relative;
             transition: color 0.4s;
         }
         nav a:hover { color: #c00; }
-        
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #c00;
+            transition: width 0.4s ease;
+        }
+        nav a:hover::after {
+            width: 100%;
+        }
+       
         /* Hero */
         #hero {
             height: 100vh;
@@ -58,41 +78,53 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.5);
         }
         #hero h1 {
             font-size: 6rem;
             margin-bottom: 20px;
             z-index: 1;
-            animation: fadeIn 2s ease-out;
+            opacity: 0;
+            color: #000;
+            animation: fadeInDown 1.5s ease-out forwards;
         }
         #hero p {
             font-size: 1.8rem;
             margin-bottom: 40px;
             z-index: 1;
+            opacity: 0;
+            color: #000;
+            animation: fadeInDown 1.5s ease-out 0.5s forwards;
         }
         .cta {
             z-index: 1;
             padding: 15px 40px;
-            background: rgba(200, 0, 0, 0.8);
+            background: #c00;
             color: #fff;
             text-decoration: none;
             font-weight: 600;
             border-radius: 50px;
             transition: all 0.4s;
+            opacity: 0;
+            animation: fadeInDown 1.5s ease-out 1s forwards, pulse 3s infinite ease-in-out 2s;
         }
-        .cta:hover { background: #c00; transform: scale(1.1); }
-        
+        .cta:hover { 
+            background: #a00; 
+            transform: scale(1.1); 
+        }
+       
         /* Sections */
         section { padding: 120px 50px; }
         .section-title {
             text-align: center;
             font-size: 4rem;
             margin-bottom: 80px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
         }
-        
+       
         /* Models Gallery */
-        #models { background: #111; }
+        #models { background: #fff; }
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -105,6 +137,17 @@
             overflow: hidden;
             border-radius: 12px;
             cursor: pointer;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.8s ease-out forwards;
+            transition: transform 0.6s ease, box-shadow 0.6s ease;
+        }
+        .grid .card:nth-child(1) { animation-delay: 0.2s; }
+        .grid .card:nth-child(2) { animation-delay: 0.4s; }
+        .grid .card:nth-child(3) { animation-delay: 0.6s; }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
         .card img {
             width: 100%;
@@ -112,20 +155,20 @@
             object-fit: cover;
             transition: transform 0.8s ease;
         }
-        .card:hover img { transform: scale(1.1); }
+        .card:hover img { transform: scale(1.15); }
         .overlay {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
             padding: 40px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            background: linear-gradient(transparent, rgba(255,255,255,0.95));
             transition: background 0.6s;
         }
-        .card:hover .overlay { background: rgba(0,0,0,0.95); }
-        .overlay h3 { font-size: 2.5rem; margin-bottom: 10px; }
-        .overlay p { font-size: 1.2rem; opacity: 0.9; }
-        
+        .card:hover .overlay { background: rgba(255,255,255,0.98); }
+        .overlay h3 { font-size: 2.5rem; margin-bottom: 10px; color: #000; }
+        .overlay p { font-size: 1.2rem; color: #111; }
+       
         /* Performance Split */
         .split {
             display: grid;
@@ -135,10 +178,21 @@
             margin: 0 auto;
             align-items: center;
         }
-        .split img { width: 100%; border-radius: 12px; }
+        .split img { 
+            width: 100%; 
+            border-radius: 12px; 
+            opacity: 0;
+            transform: translateX(50px);
+            animation: fadeInRight 1.2s ease-out 0.3s forwards;
+        }
+        .text-content {
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: fadeInLeft 1.2s ease-out 0.3s forwards;
+        }
         .text-content h2 { font-size: 3.5rem; margin-bottom: 30px; }
-        .text-content p { font-size: 1.3rem; line-height: 1.8; opacity: 0.9; }
-        
+        .text-content p { font-size: 1.3rem; line-height: 1.8; color: #333; }
+       
         /* Interior & Lifestyle */
         .full-bleed {
             height: 80vh;
@@ -155,29 +209,57 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.5);
         }
         .full-bleed h2 {
             font-size: 5rem;
             z-index: 1;
+            color: #000;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: zoomIn 2s ease-out forwards;
         }
-        
+        .full-bleed:nth-of-type(2) h2 { animation-delay: 0.3s; }
+        .full-bleed:nth-of-type(3) h2 { animation-delay: 0.3s; }
+       
         /* Footer */
         footer {
             padding: 100px 50px;
-            background: #000;
+            background: #fff;
             text-align: center;
+            color: #111;
         }
         footer .cta { background: #c00; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(50px); }
+        footer .cta:hover { background: #a00; }
+       
+        /* Keyframes */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-60px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+zadeh: 0; transform: translateY(60px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-80px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(80px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
     </style>
 </head>
 <body>
-
     <nav>
         <div class="logo">APEX</div>
         <ul>
@@ -188,13 +270,11 @@
             <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
-
     <section id="hero">
         <h1>Engineered for the Extraordinary</h1>
         <p>Where performance meets artistry</p>
         <a href="#models" class="cta">Explore the Collection</a>
     </section>
-
     <section id="models">
         <h2 class="section-title">The Collection</h2>
         <div class="grid">
@@ -221,7 +301,6 @@
             </div>
         </div>
     </section>
-
     <section id="performance">
         <h2 class="section-title">Uncompromising Performance</h2>
         <div class="split">
@@ -232,13 +311,11 @@
             <img src="https://images.pexels.com/photos/28852292/pexels-photo-28852292/free-photo-of-close-up-of-ferrari-engine-parts-in-detail.jpeg" alt="Engine Detail" loading="lazy">
         </div>
     </section>
-
     <section id="interior">
         <div class="full-bleed" style="background-image: url('https://images.pexels.com/photos/18823134/pexels-photo-18823134/free-photo-of-modern-mercedes-car-interior.jpeg');">
             <h2>Crafted Interior Excellence</h2>
         </div>
     </section>
-
     <section id="lifestyle">
         <div class="full-bleed" style="background-image: url('https://images.pexels.com/photos/18259553/pexels-photo-18259553/free-photo-of-expensive-sports-car-at-night.jpeg');">
             <h2>Live the Apex Life</h2>
@@ -247,13 +324,11 @@
             <h2>Conquer Every Horizon</h2>
         </div>
     </section>
-
     <footer id="contact">
         <h2>Begin Your Journey</h2>
         <p>Join an exclusive world of performance and luxury.</p>
         <a href="mailto:info@apexmotors.com" class="cta">Inquire Now</a>
         <p style="margin-top: 50px; opacity: 0.6;">© 2026 Apex Motors. All rights reserved.</p>
     </footer>
-
 </body>
 </html>
